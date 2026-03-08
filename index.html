@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<!-- Declares the document type as HTML5 so the browser renders the page using modern HTML standards -->
+
+<html lang="en">
+<!-- Root element of the HTML document. lang="en" helps browsers and search engines understand language -->
+
+<head>
+
+<!-- Favicon icon shown in the browser tab -->
+<link rel="icon" type="image/png" href="images/logo.png">
+
+
+<!-- Character encoding to support most characters and symbols -->
+<meta charset="UTF-8">
+
+<!-- Makes the website responsive on mobile, tablet and desktop -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO meta description shown in search engine results -->
+<meta name="description" content="Vishesh Jaiswal - MERN Stack Developer 
+Portfolio showcasing web development projects, skills, and experience.">
+
+
+<!-- Title displayed in the browser tab -->
+<title>Vishesh Jaiswal | Portfolio</title>
+
+<!-- Main stylesheet for the portfolio design -->
+<link rel="stylesheet" href="style.css">
+
+<!-- Font Awesome CDN used for icons (GitHub, LinkedIn, Instagram, Email etc.) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- Scroll progress bar that increases width when user scrolls the page -->
+<div id="scrollBar"></div>
+
+<!-- Canvas element used for animated particle background (controlled via JavaScript) -->
+<canvas id="particles"></canvas>
+
+
+<!-- ================= NAVBAR ================= -->
+<!-- Navigation bar used for quick access to different sections of the portfolio -->
+
+<nav class="navbar">
+
+<!-- Logo that links back to the hero/home section -->
+<a href="#hero" class="logo">
+
+<!-- Hexagon styled logo container -->
+<div class="logo-hex">
+VJ
+</div>
+
+</a>
+
+<!-- Navigation links -->
+<ul class="nav-links">
+
+<!-- Internal anchor links that scroll to page sections -->
+<li><a href="#hero">Home</a></li>
+<li><a href="#about">About</a></li>
+<li><a href="#skills">Skills</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#github">GitHub</a></li>
+
+<!-- Contact button styled differently -->
+<li><a href="#contact" class="nav-btn">Contact</a></li>
+
+</ul>
+
+<!-- Dark/Light theme toggle button controlled by JavaScript -->
+<button id="themeToggle">☀️</button>
+
+</nav>
+
+
+
+<!-- ================= HERO SECTION ================= -->
+<!-- Hero section is the first visible section of the portfolio -->
+
+<section id="hero" class="hero">
+ 
+<!-- Decorative glowing effect behind the hero content -->
+<div class="hero-glow"></div>
+    
+
+<!-- Container for profile image -->
+<div class="profile-box">
+
+    <!-- Circular frame for profile photo -->
+    <div class="profile-circle">
+
+        <!-- loading="lazy" improves performance by loading image only when needed -->
+        <img src="images/profile.jpeg"  loading="lazy" alt="Vishesh">
+
+    </div>
+</div>
+
+<!-- Main heading introducing the developer -->
+<h1>Hello, It's Me <span>Vishesh Jaiswal</span></h1>
+
+<!-- Typing animation text populated dynamically using JavaScript -->
+<h2 class="typing"></h2>
+
+<!-- Short introduction text -->
+<p>Curious web developer passionate about designing and building modern,
+     interactive web experiences and more...</p>
+
+<!-- Buttons for resume actions -->
+<div class="hero-buttons">
+
+<!-- Resume download button -->
+<a href="resume/Vishesh_Jaiswal.pdf" class="btn">Download Resume</a>
+
+<!-- Opens resume in a new tab -->
+<a href="resume/Vishesh_Jaiswal.pdf" class="btn" target="_blank">
+View Resume
+</a>
+
+</div>
+
+<!-- Social media icons section -->
+<div class="social-icons">
+
+<!-- GitHub profile -->
+<a href="https://github.com/Visheshjais" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+
+<!-- LinkedIn profile -->
+<a href="https://www.linkedin.com/in/vishesh-j-a085b3236/" target="_blank">
+<i class="fab fa-linkedin"></i>
+</a>
+
+<!-- Instagram profile -->
+<a href="https://www.instagram.com/vishesh.jswl/?hl=en" target="_blank">
+<i class="fab fa-instagram"></i>
+</a>
+
+<!-- Email link -->
+<a href="mailto:jaiswalvishesh1214@gmail.com">
+<i class="fas fa-envelope"></i>
+</a>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= ABOUT ================= -->
+<!-- About section describing the developer background -->
+
+<section id="about" class="about reveal">
+
+<h2>About Me</h2>
+
+<!-- Container holding about text and highlight cards -->
+<div class="about-container">
+
+<!-- Main description text -->
+<div class="about-text">
+
+<p>
+Hi, I’m <strong>Vishesh Jaiswal</strong> 👋 — a passionate web developer who enjoys building modern, responsive, and user-friendly web applications.
+</p>
+
+<p>
+I recently graduated with a <strong>B.Tech in Computer Science</strong> from Jaypee University of Information Technology. My primary focus is <strong>MERN stack development</strong>, where I build scalable web applications using React, Node.js, Express, and MongoDB.
+</p>
+
+<p>
+I love transforming ideas into real digital experiences through clean design, efficient code, and creative problem solving.
+</p>
+
+</div>
+
+
+<!-- Cards highlighting education, interests and hobbies -->
+<div class="about-highlights">
+
+<div class="highlight-card">
+<h3>🎓 Education</h3>
+<p>B.Tech CSE</p>
+<p>Jaypee University of Information Technology</p>
+</div>
+
+<div class="highlight-card">
+<h3>💻 Focus</h3>
+<p>MERN Stack Development</p>
+</div>
+
+<div class="highlight-card">
+<h3>🚀 Interests</h3>
+<p>Web Development</p>
+<p>Cloud Computing</p>
+</div>
+
+<div class="highlight-card">
+<h3>🏏 Hobbies</h3>
+<p>Playing Cricket</p>
+<p>🎧 Listening to Music</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= SKILLS ================= -->
+<!-- Skills section displaying technologies with animated progress bars -->
+
+<section id="skills" class="skills">
+
+<h2>Skills</h2>
+
+<!-- Grid layout for skill categories -->
+<div class="skills-grid">
+
+<!-- Languages -->
+<div class="skill-card">
+<h3>Languages</h3>
+
+<!-- Each skill contains a progress bar showing proficiency -->
+
+<div class="skill">
+<p>C</p>
+<div class="progress"><div class="progress-bar" data-progress="85"></div></div>
+</div>
+
+<div class="skill">
+<p>C++</p>
+<div class="progress"><div class="progress-bar" data-progress="85"></div></div>
+</div>
+
+<div class="skill">
+<p>HTML</p>
+<div class="progress"><div class="progress-bar" data-progress="95"></div></div>
+</div>
+
+<div class="skill">
+<p>CSS</p>
+<div class="progress"><div class="progress-bar" data-progress="90"></div></div>
+</div>
+
+<div class="skill">
+<p>JavaScript</p>
+<div class="progress"><div class="progress-bar" data-progress="85"></div></div>
+</div>
+
+</div>
+
+
+<!-- Frontend technologies -->
+<div class="skill-card">
+<h3>Frontend</h3>
+
+<div class="skill">
+<p>React.js</p>
+<div class="progress"><div class="progress-bar" data-progress="80"></div></div>
+</div>
+
+<div class="skill">
+<p>Tailwind CSS</p>
+<div class="progress"><div class="progress-bar" data-progress="75"></div></div>
+</div>
+
+<div class="skill">
+<p>Bootstrap</p>
+<div class="progress"><div class="progress-bar" data-progress="75"></div></div>
+</div>
+
+</div>
+
+
+<!-- Backend technologies -->
+<div class="skill-card">
+<h3>Backend</h3>
+
+<div class="skill">
+<p>Node.js</p>
+<div class="progress"><div class="progress-bar" data-progress="80"></div></div>
+</div>
+
+<div class="skill">
+<p>Express.js</p>
+<div class="progress"><div class="progress-bar" data-progress="75"></div></div>
+</div>
+
+</div>
+
+
+<!-- Databases -->
+<div class="skill-card">
+<h3>Databases</h3>
+
+<div class="skill">
+<p>MongoDB</p>
+<div class="progress"><div class="progress-bar" data-progress="80"></div></div>
+</div>
+
+<div class="skill">
+<p>MySQL</p>
+<div class="progress"><div class="progress-bar" data-progress="70"></div></div>
+</div>
+
+</div>
+
+
+<!-- Development tools -->
+<div class="skill-card">
+<h3>Tools & Technologies</h3>
+
+<div class="skill">
+<p>Git</p>
+<div class="progress"><div class="progress-bar" data-progress="80"></div></div>
+</div>
+
+<div class="skill">
+<p>Mongoose</p>
+<div class="progress"><div class="progress-bar" data-progress="75"></div></div>
+</div>
+
+<div class="skill">
+<p>Firebase Auth</p>
+<div class="progress"><div class="progress-bar" data-progress="75"></div></div>
+</div>
+
+<div class="skill">
+<p>JWT</p>
+<div class="progress"><div class="progress-bar" data-progress="75"></div></div>
+</div>
+
+</div>
+
+
+<!-- Interest areas -->
+<div class="skill-card">
+<h3>Areas of Interest</h3>
+<p>Web Development • Cloud Computing</p>
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- Timeline section showing education and experience -->
+<section id="timeline" class="timeline reveal">
+
+<h2>Education & Experience</h2>
+
+<div class="timeline-container">
+
+<!-- Education item -->
+<div class="timeline-item">
+
+<div class="timeline-icon">🎓</div>
+
+<div class="timeline-content">
+
+<h3>B.Tech Computer Science</h3>
+
+<p>Jaypee University of Information Technology</p>
+
+<span>2021 – 2025</span>
+
+</div>
+
+</div>
+
+
+<!-- Internship item -->
+<div class="timeline-item">
+
+<div class="timeline-icon">💻</div>
+
+<div class="timeline-content">
+
+<h3>Web Development Intern</h3>
+
+<p>Built MERN stack applications and modern web interfaces.</p>
+
+<span>June 2024 – July 2024</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= PROJECTS ================= -->
+<!-- Section displaying portfolio projects -->
+
+<section id="projects" class="projects reveal">
+
+<h2>Projects</h2>
+
+<div class="project-container">
+
+
+<!-- ================= PROJECT 1 ================= -->
+
+<!-- Project card with tilt effect and clickable modal -->
+<div class="project-card tilt" onclick="openProject('groovix')">
+
+<img src="images/groovix 1.png" loading="lazy" class="project-img">
+
+<h3>Groovix Music Player</h3>
+
+<p>
+Spotify-inspired music streaming web application with interactive UI
+and music player functionality.
+</p>
+
+<div class="tech-stack">
+<span>React</span>
+<span>Node.js</span>
+<span>MongoDB</span>
+</div>
+
+</div>
+
+
+
+<!-- ================= PROJECT 2 ================= -->
+
+<div class="project-card tilt" onclick="openProject('unmasking')">
+
+<img src="images/Unmasking 1.png" loading="lazy" class="project-img">
+
+<h3>Unmasking Illusion</h3>
+
+<p>
+Deepfake detection system using machine learning to detect manipulated
+faces and videos.
+</p>
+
+<div class="tech-stack">
+<span>Python</span>
+<span>PyTorch</span>
+<span>JavaScript</span>
+</div>
+
+</div>
+
+
+
+<!-- ================= PROJECT 3 ================= -->
+
+<div class="project-card tilt" onclick="openProject('translation')">
+
+<img src="images/All in One 1.jpg" loading="lazy" class="project-img">
+
+<h3>All-in-One Translation</h3>
+
+<p>
+Multilingual translation platform supporting 50+ languages with
+multiple translation methods.
+</p>
+
+<div class="tech-stack">
+<span>Node.js</span>
+<span>JavaScript</span>
+<span>HTML</span>
+</div>
+
+</div>
+
+
+</div>
+
+</section>
+
+<!-- ================= GITHUB REPOS ================= -->
+<!-- GitHub repositories dynamically loaded using GitHub API -->
+
+<section id="github" class="github reveal">
+
+<h2>My GitHub Repositories</h2>
+
+<div id="repos"></div>
+
+</section>
+
+
+
+<!-- ================= CONTACT ================= -->
+<!-- Contact form using Netlify form handling -->
+
+<section id="contact" class="contact reveal">
+
+<h2>Contact Me</h2>
+
+<form name="contact" method="POST" data-netlify="true">
+
+<input type="hidden" name="form-name" value="contact">
+
+<input type="text" name="name" placeholder="Your Name" required>
+
+<input type="email" name="email" placeholder="Your Email" required>
+
+<textarea name="message" placeholder="Your Message" required></textarea>
+
+<button type="submit" class="btn contact-btn">✉ Send Message</button>
+
+</form>
+
+<!-- Message display after form submission -->
+<p id="formMessage"></p>
+
+</section>
+
+
+
+<!-- ================= FOOTER ================= -->
+<footer>
+
+<p>© 2026 Vishesh Jaiswal</p>
+<p>Built with HTML, CSS & JavaScript</p>
+</footer>
+
+
+
+
+
+<!-- ================= PROJECT MODAL ================= -->
+<!-- Modal popup that displays project details when clicked -->
+
+<div id="projectModal" class="project-modal">
+
+<div class="modal-content">
+
+<!-- Close button -->
+<span class="close-btn" onclick="closeProject()">×</span>
+
+<!-- slider -->
+<div class="slider">
+<button class="slide-btn left" onclick="prevSlide()">❮</button>
+<img id="sliderImage">
+<button class="slide-btn right" onclick="nextSlide()">❯</button>
+</div>
+
+<h2 id="modalTitle"></h2>
+
+<p id="modalDescription"></p>
+
+<div id="modalTech"></div>
+
+<div class="modal-links">
+<a id="modalGithub" target="_blank">GitHub</a>
+<a id="modalDemo" target="_blank">Live Demo</a>
+</div>
+
+</div>
+
+</div>
+
+<!-- Main JavaScript file controlling animations, modal, theme toggle, particles, etc -->
+<script src="script.js"></script>
+
+</body>
+</html>
