@@ -307,139 +307,77 @@ transform:translateY(0px);
 
 /* ================= NAVBAR ================= */
 
-/* Fixed navigation bar at top of page */
 .navbar{
-
 position:fixed;
 top:0;
 left:0;
-
 width:100%;
-
 display:flex;
-justify-content:space-between; /* Space between logo & links */
+justify-content:space-between;
 align-items:center;
-
-padding: 10px 80px;
-
+padding: 8px 80px;
 background:#020617;
-
-z-index:1000; /* Ensure navbar stays above content */
-
+z-index:1000;
 }
 
-/* Contact button inside navbar */
+/* Contact — same as other links, no button */
 .nav-btn{
-display:inline-block;       
-
-background:#38bdf8;
-
-color:#0f172a !important;
-
-padding:15px 25px;
-
-border-radius:10px;
-
-font-weight:600;
-
+display:inline-block;
+color:white !important;
+font-weight:500;
 transition:0.3s;
-
 }
 
-/* Hover effect */
 .nav-btn:hover{
-
-background:white;
-
-color:#0f172a !important;
-
+color:#38bdf8 !important;
 transform:translateY(-2px);
-
-box-shadow:0 8px 20px rgba(56,189,248,0.4);
 }
 
 /* ================= NAVBAR LINKS ================= */
 
-/* Navigation links container */
 .nav-links{
-
 display:flex;
-
 gap:35px;
-
-align-items: center;
-
+align-items:center;
 }
 
-/* Individual nav link */
 .nav-links a{
-
 position:relative;
-
 text-decoration:none;
-
 color:white;
-
 font-weight:500;
-
 font-size:16px;
-
 padding:5px 0;
-
 transition:0.3s;
-
 }
 
 /* underline animation */
-
 .nav-links a::after{
-
 content:"";
-
 position:absolute;
-
 left:0;
-
 bottom:-4px;
-
 width:0%;
-
 height:2px;
-
 background:#38bdf8;
-
 transition:0.3s;
-
 }
 
-/* hover effect */
-
 .nav-links a:hover{
-
 color:#38bdf8;
-
 text-shadow:0 0 10px rgba(56,189,248,0.7);
-
 }
 
 .nav-links a:hover::after{
-
-width:100%; /* underline expands */
-
+width:100%;
 }
-
 
 /* ================= ACTIVE NAV LINK ================= */
 
-/* Highlight active section link */
 .nav-links a.active{
-
 color:#38bdf8;
-
 font-weight:600;
-
 text-shadow:0 0 10px rgba(56,189,248,0.7);
-
 }
 
 /* ================= SCROLL PROGRESS BAR ================= */
