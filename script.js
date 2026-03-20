@@ -111,6 +111,19 @@ window.addEventListener("scroll", () => {
 
 });
 
+/* ================= 6. SCROLL REVEAL ================= */
+/* reveal() is now called inline inside the merged scroll handler above.
+   We still call it once here on page load so elements already in view
+   (above the fold) animate in without requiring a scroll. */
+
+function reveal(){
+  document.querySelectorAll(".reveal").forEach(el => {
+    if(el.getBoundingClientRect().top < window.innerHeight - 100){
+      el.classList.add("active");
+    }
+  });
+}
+reveal(); /* initial call on page load */
 
 /* ================= 5. TYPING EFFECT ================= */
 /* Cycles through the phrases array, typing one character at a time.
@@ -139,19 +152,7 @@ let charIndex   = 0; /* how many characters have been typed so far */
 })();
 
 
-/* ================= 6. SCROLL REVEAL ================= */
-/* reveal() is now called inline inside the merged scroll handler above.
-   We still call it once here on page load so elements already in view
-   (above the fold) animate in without requiring a scroll. */
 
-function reveal(){
-  document.querySelectorAll(".reveal").forEach(el => {
-    if(el.getBoundingClientRect().top < window.innerHeight - 100){
-      el.classList.add("active");
-    }
-  });
-}
-reveal(); /* initial call on page load */
 
 
 /* ================= 7. SKILL BAR ANIMATION ================= */
