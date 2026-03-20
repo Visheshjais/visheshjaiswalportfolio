@@ -212,10 +212,11 @@ text-decoration:none;
 }
 
 .logo-img{
-width:75px;
-height: 75px;
+width:85px;
+height: 85px;
 border-radius:50%;
 border:2px solid #38bdf8;
+background: white;
 object-fit:cover;
 transition:0.3s;
 animation:floatLogo 4s ease-in-out infinite;
