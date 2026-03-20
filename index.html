@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vishesh Jaiswal - MERN Stack Developer Portfolio showcasing web development projects, skills, and experience.">
+  <title>Vishesh Jaiswal | Portfolio</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome — icons for navbar, social links, modal tabs,
+       repo cards (star, fork, arrow) and modal link buttons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- Thin progress bar at the top that fills as the user scrolls -->
+<div id="scrollBar"></div>
+
+<!-- Full-screen canvas for the animated particle background -->
+<canvas id="particles"></canvas>
+
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+
+  <!-- Logo — clicking returns to the hero section -->
+ <a href="#hero" class="logo">
+  <img src="images/logo.png" alt="Vishesh Jaiswal" class="logo-img">
+</a>
+
+  <!-- Hamburger button — mobile only (hidden on desktop via CSS).
+       JS toggles "open" class: animates 3 bars → X and shows the dropdown. -->
+  <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
+  <!-- Nav links — id="navLinks" lets JS toggle the "open" class on mobile -->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#github">GitHub</a></li>
+    <li><a href="#contact" class="nav-btn">Contact</a></li>
+  </ul>
+
+  <!-- Dark / Light mode toggle -->
+  <button id="themeToggle">☀️</button>
+
+</nav>
+
+
+<!-- ================= HERO ================= -->
+<section id="hero" class="hero">
+
+  <!-- Decorative radial glow behind the hero content -->
+  <div class="hero-glow"></div>
+
+  <!-- Profile photo with spinning RGB ring -->
+  <div class="profile-box">
+    <div class="profile-circle">
+      <img src="images/profile.jpeg" loading="lazy" alt="Vishesh Jaiswal">
+    </div>
+  </div>
+
+  <h1>Hello, It's Me <span>Vishesh Jaiswal</span></h1>
+
+  <!-- Typing animation — text is injected by JavaScript -->
+  <h2 class="typing"></h2>
+
+  <p>Curious web developer passionate about designing and building modern,
+  interactive web experiences and more...</p>
+
+  <!-- Resume buttons -->
+  <div class="hero-buttons">
+    <a href="resume/Vishesh_Jaiswal.pdf" class="btn">Download Resume</a>
+    <a href="resume/Vishesh_Jaiswal.pdf" class="btn" target="_blank">View Resume</a>
+  </div>
+
+  <!-- Social links -->
+  <div class="social-icons">
+    <a href="https://github.com/Visheshjais" target="_blank"><i class="fab fa-github"></i></a>
+    <a href="https://www.linkedin.com/in/vishesh-j-a085b3236/" target="_blank"><i class="fab fa-linkedin"></i></a>
+    <a href="https://www.instagram.com/vishesh.jswl/?hl=en" target="_blank"><i class="fab fa-instagram"></i></a>
+    <a href="mailto:jaiswalvishesh1214@gmail.com"><i class="fas fa-envelope"></i></a>
+  </div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="about reveal">
+
+  <h2>About Me</h2>
+
+  <div class="about-container">
+
+    <!-- Bio paragraphs -->
+    <div class="about-text">
+      <p>Hi, I'm <strong>Vishesh Jaiswal</strong> 👋 — a passionate web developer who enjoys building modern, responsive, and user-friendly web applications.</p>
+      <p>I recently graduated with a <strong>B.Tech in Computer Science</strong> from Jaypee University of Information Technology. My primary focus is <strong>MERN stack development</strong>, where I build scalable web applications using React, Node.js, Express, and MongoDB.</p>
+      <p>I love transforming ideas into real digital experiences through clean design, efficient code, and creative problem solving.</p>
+    </div>
+
+    <!-- Highlight cards -->
+    <div class="about-highlights">
+      <div class="highlight-card">
+        <h3>🎓 Education</h3>
+        <p>B.Tech CSE</p>
+        <p>Jaypee University of Information Technology</p>
+      </div>
+      <div class="highlight-card">
+        <h3>💻 Focus</h3>
+        <p>MERN Stack Development</p>
+      </div>
+      <div class="highlight-card">
+        <h3>🚀 Interests</h3>
+        <p>Web Development</p>
+        <p>Cloud Computing</p>
+      </div>
+      <div class="highlight-card">
+        <h3>🏏 Hobbies</h3>
+        <p>Playing Cricket</p>
+        <p>🎧 Listening to Music</p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= SKILLS ================= -->
+<!-- data-progress on each .progress-bar is read by JS to set the fill width -->
+<section id="skills" class="skills">
+
+  <h2>Skills</h2>
+
+  <div class="skills-grid">
+
+    <div class="skill-card">
+      <h3>Languages</h3>
+      <div class="skill"><p>C</p>          <div class="progress"><div class="progress-bar" data-progress="85"></div></div></div>
+      <div class="skill"><p>C++</p>        <div class="progress"><div class="progress-bar" data-progress="85"></div></div></div>
+      <div class="skill"><p>HTML</p>       <div class="progress"><div class="progress-bar" data-progress="95"></div></div></div>
+      <div class="skill"><p>CSS</p>        <div class="progress"><div class="progress-bar" data-progress="90"></div></div></div>
+      <div class="skill"><p>JavaScript</p><div class="progress"><div class="progress-bar" data-progress="85"></div></div></div>
+    </div>
+
+    <div class="skill-card">
+      <h3>Frontend</h3>
+      <div class="skill"><p>React.js</p>    <div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
+      <div class="skill"><p>Tailwind CSS</p><div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+      <div class="skill"><p>Bootstrap</p>   <div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+    </div>
+
+    <div class="skill-card">
+      <h3>Backend</h3>
+      <div class="skill"><p>Node.js</p>   <div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
+      <div class="skill"><p>Express.js</p><div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+    </div>
+
+    <div class="skill-card">
+      <h3>Databases</h3>
+      <div class="skill"><p>MongoDB</p><div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
+      <div class="skill"><p>MySQL</p>  <div class="progress"><div class="progress-bar" data-progress="70"></div></div></div>
+    </div>
+
+    <div class="skill-card">
+      <h3>Tools & Technologies</h3>
+      <div class="skill"><p>Git</p>          <div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
+      <div class="skill"><p>Mongoose</p>     <div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+      <div class="skill"><p>Firebase Auth</p><div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+      <div class="skill"><p>JWT</p>          <div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+    </div>
+
+    <div class="skill-card">
+      <h3>Areas of Interest</h3>
+      <p>Web Development • Cloud Computing</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= TIMELINE ================= -->
+<section id="timeline" class="timeline reveal">
+
+  <h2>Education & Experience</h2>
+
+  <div class="timeline-container">
+
+    <div class="timeline-item">
+      <div class="timeline-icon">🎓</div>
+      <div class="timeline-content">
+        <h3>B.Tech Computer Science</h3>
+        <p>Jaypee University of Information Technology</p>
+        <span>2021 – 2025</span>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-icon">💻</div>
+      <div class="timeline-content">
+        <h3>Web Development Intern</h3>
+        <p>Built MERN stack applications and modern web interfaces.</p>
+        <span>June 2024 – July 2024</span>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= PROJECTS ================= -->
+<!-- onclick passes the project key to openProject() in script.js -->
+<section id="projects" class="projects reveal">
+
+  <h2>Projects</h2>
+
+  <div class="project-container">
+
+    <!-- Project 1 -->
+    <div class="project-card tilt" onclick="openProject('groovix')">
+      <!-- Play badge: fades in on hover — hints at screenshots + video in modal -->
+      <div class="project-play-badge"><i class="fas fa-play-circle"></i></div>
+      <img src="images/groovix 1.png" loading="lazy" class="project-img" alt="Groovix Music Player">
+      <h3>Groovix Music Player</h3>
+      <p>Spotify-inspired music streaming web application with interactive UI and music player functionality.</p>
+      <div class="tech-stack">
+        <span>React</span><span>Node.js</span><span>MongoDB</span>
+      </div>
+    </div>
+
+    <!-- Project 2 -->
+    <div class="project-card tilt" onclick="openProject('unmasking')">
+      <div class="project-play-badge"><i class="fas fa-play-circle"></i></div>
+      <img src="images/Unmasking 1.png" loading="lazy" class="project-img" alt="Unmasking Illusion">
+      <h3>Unmasking Illusion</h3>
+      <p>Deepfake detection system using machine learning to detect manipulated faces and videos.</p>
+      <div class="tech-stack">
+        <span>Python</span><span>PyTorch</span><span>JavaScript</span>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card tilt" onclick="openProject('translation')">
+      <div class="project-play-badge"><i class="fas fa-play-circle"></i></div>
+      <img src="images/All in One 1.jpg" loading="lazy" class="project-img" alt="All-in-One Translation">
+      <h3>All-in-One Translation</h3>
+      <p>Multilingual translation platform supporting 50+ languages with multiple translation methods.</p>
+      <div class="tech-stack">
+        <span>Node.js</span><span>JavaScript</span><span>HTML</span>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ================= GITHUB REPOS ================= -->
+<!-- Cards injected here by JavaScript using the GitHub REST API -->
+<section id="github" class="github reveal">
+  <h2>My GitHub Repositories</h2>
+  <div id="repos"></div>
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+<!-- Submission handled by Netlify via data-netlify="true" -->
+<section id="contact" class="contact reveal">
+
+  <h2>Contact Me</h2>
+
+  <form name="contact" method="POST" data-netlify="true">
+    <input type="hidden" name="form-name" value="contact">
+    <input  type="text"  name="name"    placeholder="Your Name"    required>
+    <input  type="email" name="email"   placeholder="Your Email"   required>
+    <textarea            name="message" placeholder="Your Message" required></textarea>
+    <!-- contact-btn: pill shape, animated gradient, shine sweep, pulsing glow -->
+    <button type="submit" class="btn contact-btn">✉ Send Message</button>
+  </form>
+
+  <!-- Confirmation message injected by JavaScript after submission -->
+  <p id="formMessage"></p>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <p>© 2026 Vishesh Jaiswal</p>
+  <p>Built with HTML, CSS & JavaScript</p>
+</footer>
+
+
+<!-- ================= PROJECT MODAL ================= -->
+<!-- Full-screen overlay opened when a project card is clicked -->
+<div id="projectModal" class="project-modal">
+  <div class="modal-content">
+
+    <!-- Close button -->
+    <span class="close-btn" onclick="closeProject()">×</span>
+
+    <!-- Tab switcher: Screenshots | Demo Video
+         JS toggles "active" class and shows/hides the panels below -->
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabImages" onclick="switchTab('images')">
+        <i class="fas fa-images"></i> Screenshots
+      </button>
+      <button class="modal-tab" id="tabVideo" onclick="switchTab('video')">
+        <i class="fas fa-video"></i> Demo Video
+      </button>
+    </div>
+
+    <!-- Screenshots panel — shown by default -->
+    <div id="panelImages" class="modal-panel">
+      <div class="slider">
+        <button class="slide-btn left"  onclick="prevSlide()">❮</button>
+        <img id="sliderImage" alt="Project Screenshot">
+        <button class="slide-btn right" onclick="nextSlide()">❯</button>
+      </div>
+      <!-- Dot indicators: built dynamically by JS, one per screenshot image -->
+      <div id="sliderDots" class="slider-dots"></div>
+    </div>
+
+    <!-- Video panel — hidden by default, shown when Video tab is clicked.
+         Shows the HTML5 player if videoSrc is set, otherwise shows fallback. -->
+    <div id="panelVideo" class="modal-panel" style="display:none;">
+      <div class="video-wrapper">
+        <!-- preload="metadata" loads only duration/thumbnail until play is pressed -->
+        <video id="modalVideo" controls preload="metadata">
+          <source id="modalVideoSrc" src="" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <!-- Fallback shown when videoSrc is "" in projectData -->
+        <div id="noVideoMsg" class="no-video-msg" style="display:none;">
+          <i class="fas fa-video-slash"></i>
+          <p>Demo video coming soon!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal text — populated by JS when a project opens -->
+    <h2 id="modalTitle"></h2>
+    <p  id="modalDescription"></p>
+    <div id="modalTech"></div>
+
+    <div class="modal-links">
+      <a id="modalGithub" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+      <a id="modalDemo"   target="_blank"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+    </div>
+
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
