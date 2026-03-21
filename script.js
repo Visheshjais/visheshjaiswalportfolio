@@ -715,7 +715,35 @@ function playClick(){
   }
 }
 
-/* Attach sound effect to main interactive buttons */
-document.querySelectorAll(".btn-primary, .btn-outline, .card-btn, .modal-links a, .repo-link").forEach(btn => {
-  btn.addEventListener("click", playClick);
+/* ================= SOUND EFFECTS — WHOLE SITE ================= */
+/* Attaches the subtle click sound to every interactive element.
+   Covers: all buttons, all links, nav links, filter buttons,
+   skill cards, highlight cards, social icons, theme toggle,
+   back to top, WhatsApp button, copy email, footer links. */
+
+document.querySelectorAll(`
+  .btn-primary,
+  .btn-outline,
+  .btn,
+  .card-btn,
+  .modal-links a,
+  .repo-link,
+  .nav-links a,
+  .filter-btn,
+  .social-icons a,
+  .highlight-card,
+  .cert-card,
+  .contact-info-item,
+  .footer-links a,
+  .modal-tab,
+  .slide-btn,
+  .dot,
+  #themeToggle,
+  #backToTop,
+  #whatsappBtn,
+  #copyEmailBtn,
+  .logo-img,
+  .close-btn
+`).forEach(el => {
+  el.addEventListener("click", playClick);
 });
