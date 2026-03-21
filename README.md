@@ -143,7 +143,7 @@ gtag('config', 'G-XXXXXXXXXX');
 ### `index.html` — WhatsApp Button
 ```html
 <!-- Replace 91XXXXXXXXXX with 91 + your 10-digit mobile number -->
-href="https://wa.me/91XXXXXXXXXX?text=Hi%20Vishesh..."
+href="https://wa.me/91XXXXXXXX?text=Hi%20Vishesh..."
 
 <!-- Example: 919876543210 for number 9876543210 -->
 ```
@@ -244,5 +244,5 @@ Preloader ring    →  conic-gradient spin (1.2s)
 © 2026 · Made with ❤️
 
 ⭐ If you like this portfolio, give it a star on GitHub!
-
+Hii i am vishesh jaiswal
 </div>
