@@ -72,7 +72,7 @@ const copyToast    = document.getElementById("copyToast");
 /* Initialized immediately on page load — NOT inside the submit handler.
    This eliminates the 15-20 second delay on first form submit. */
 
-emailjs.init("YOUR_PUBLIC_KEY"); /* ← replace with your EmailJS Public Key */
+emailjs.init("mj63OiHBpYlItbYc0"); /* ← replace with your EmailJS Public Key */
 
 
 /* ================= 4. CURSOR GLOW ================= */
@@ -629,7 +629,7 @@ if(contactForm){
     /* Send via EmailJS — reads name, email, message fields automatically */
     emailjs.sendForm(
       "service_0kgo05i",  /* ← your Gmail Service ID */
-      "YOUR_TEMPLATE_ID", /* ← replace with your EmailJS Template ID */
+      "template_zt1s51c", /* ← replace with your EmailJS Template ID */
       contactForm
     )
     .then(() => {
