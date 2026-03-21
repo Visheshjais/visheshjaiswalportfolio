@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Title shown in browser tab when user lands on a broken/missing page -->
+  <title>404 — Page Not Found | Vishesh Jaiswal</title>
+
+  <!-- Same favicon as main portfolio for brand consistency -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
+  <link rel="shortcut icon" href="images/logo.png">
+  <link rel="apple-touch-icon" href="images/logo.png">
+
+  <!-- Same font as portfolio — Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome for the home icon on the back button -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    /* Reset — remove default browser margin/padding */
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    /* Dark background matching portfolio dark theme */
+    body{
+      font-family:'Plus Jakarta Sans', sans-serif;
+      background:#0f172a;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:24px;
+      overflow:hidden; /* prevents scrollbars from particle canvas */
+    }
+
+    /* Particle canvas fixed behind all content — same as portfolio */
+    canvas{
+      position:fixed;
+      inset:0; /* shorthand for top:0 right:0 bottom:0 left:0 */
+      z-index:0;
+    }
+
+    /* All page content sits above the particle canvas */
+    .content{ position:relative; z-index:1; }
+
+    /* Logo in top-left corner — same as navbar logo */
+    .logo-link{
+      position:fixed;
+      top:20px;
+      left:24px;
+      z-index:10;
+    }
+
+    .logo-link img{
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      border:2px solid #38bdf8;
+      object-fit:cover;
+      transition:0.3s;
+    }
+
+    .logo-link img:hover{
+      box-shadow:0 0 14px #38bdf8;
+      transform:scale(1.08);
+    }
+
+    /* Big "404" text — animated gradient shimmer same as section headings */
+    .error-code{
+      /* clamp(min, preferred, max) — scales smoothly between screen sizes */
+      font-size:clamp(80px, 22vw, 200px);
+      font-weight:800;
+      background:linear-gradient(90deg, #38bdf8, #6c63ff, #38bdf8);
+      background-size:200% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:shimmer404 3s linear infinite;
+      line-height:1;
+      margin-bottom:8px;
+    }
+
+    /* Shimmer moves gradient left-to-right continuously */
+    @keyframes shimmer404{
+      0%  { background-position:200% center; }
+      100%{ background-position:-200% center; }
+    }
+
+    /* "Page Not Found" heading */
+    .error-title{
+      font-size:clamp(18px, 5vw, 30px);
+      font-weight:700;
+      margin-bottom:12px;
+    }
+
+    /* Descriptive text below heading */
+    .error-desc{
+      font-size:clamp(13px, 3vw, 16px);
+      color:#94a3b8; /* muted grey */
+      max-width:400px;
+      margin:0 auto 36px;
+      line-height:1.7;
+    }
+
+    /* Back to Portfolio button — same gradient pill as hero buttons */
+    .back-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:14px 32px;
+      background:linear-gradient(135deg, #38bdf8, #6c63ff);
+      color:#0f172a;
+      border-radius:50px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:15px;
+      transition:0.3s;
+      box-shadow:0 4px 20px rgba(56,189,248,0.4);
+    }
+
+    /* Hover: lifts up with stronger glow */
+    .back-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 8px 30px rgba(56,189,248,0.6);
+    }
+
+    /* Mobile responsive adjustments */
+    @media(max-width:480px){
+      .back-btn{ padding:12px 24px; font-size:14px; }
+      .logo-link img{ width:38px; height:38px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Particle canvas — same floating dot animation as portfolio -->
+  <canvas id="particles"></canvas>
+
+  <!-- Logo top-left — clicking returns to portfolio home -->
+  <a href="index.html" class="logo-link">
+    <img src="images/logo.png" alt="Vishesh Jaiswal">
+  </a>
+
+  <!-- Main 404 content -->
+  <div class="content">
+    <!-- Animated gradient "404" -->
+    <div class="error-code">404</div>
+    <h1 class="error-title">Page Not Found</h1>
+    <p class="error-desc">
+      Oops! The page you're looking for doesn't exist or has been moved.
+      Let's get you back on track.
+    </p>
+    <!-- Back button — returns to main portfolio -->
+    <a href="index.html" class="back-btn">
+      <i class="fas fa-home"></i> Back to Portfolio
+    </a>
+  </div>
+
+  <script>
+    /* ===== PARTICLE BACKGROUND — same as portfolio ===== */
+    /* Canvas-based floating blue dots animation.
+       Identical to main portfolio for visual consistency. */
+
+    const canvas = document.getElementById("particles");
+    const ctx    = canvas.getContext("2d");
+
+    /* Set canvas to fill the full browser window */
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    /* Create 80 particles with random position, size, and speed */
+    const particles = Array.from({ length: 80 }, () => ({
+      x     : Math.random() * canvas.width,
+      y     : Math.random() * canvas.height,
+      size  : Math.random() * 2 + 1,             /* 1–3px */
+      speedX: (Math.random() - 0.5) * 0.7,       /* random horizontal speed */
+      speedY: (Math.random() - 0.5) * 0.7        /* random vertical speed */
+    }));
+
+    /* Animation loop — runs every frame via requestAnimationFrame */
+    (function animate(){
+      requestAnimationFrame(animate);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        /* Wrap around edges so particles loop endlessly */
+        if(p.x < 0)             p.x = canvas.width;
+        if(p.x > canvas.width)  p.x = 0;
+        if(p.y < 0)             p.y = canvas.height;
+        if(p.y > canvas.height) p.y = 0;
+        /* Draw each particle as a soft blue circle */
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(56,189,248,0.6)";
+        ctx.fill();
+      });
+    })();
+
+    /* Resize canvas when browser window is resized */
+    window.addEventListener("resize", () => {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+
+</body>
+</html>

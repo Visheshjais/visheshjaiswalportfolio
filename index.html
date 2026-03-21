@@ -1,138 +1,353 @@
 <!DOCTYPE html>
+<!-- DOCTYPE tells the browser this is an HTML5 document -->
+
 <html lang="en">
+<!-- lang="en" helps browsers and screen readers know the language -->
 
 <head>
+  <!-- ================= CHARACTER SET & VIEWPORT ================= -->
+  <!-- UTF-8 supports all characters including emojis and symbols -->
   <meta charset="UTF-8">
+  <!-- viewport: makes the site responsive on all screen sizes.
+       width=device-width sets width to device screen width.
+       initial-scale=1.0 prevents zoom on mobile load. -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Description shown in Google search results under the page title -->
   <meta name="description" content="Vishesh Jaiswal - MERN Stack Developer Portfolio showcasing web development projects, skills, and experience.">
+
+  <!-- ================= SEO / OPEN GRAPH TAGS ================= -->
+  <!-- Open Graph tags control how your portfolio looks when shared
+       on WhatsApp, LinkedIn, Twitter, Facebook — shows a rich preview
+       card with title, description, and your profile image. -->
+  <meta property="og:title"       content="Vishesh Jaiswal | MERN Stack Developer">
+  <meta property="og:description" content="Passionate MERN Stack Developer building modern, interactive web experiences.">
+  <!-- og:image — the image shown in the WhatsApp/LinkedIn preview card -->
+  <meta property="og:image"       content="images/profile.png">
+  <meta property="og:type"        content="website">
+  <!-- Twitter card type — summary_large_image shows a big image preview -->
+  <meta name="twitter:card"       content="summary_large_image">
+
   <title>Vishesh Jaiswal | Portfolio</title>
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="images/logo.png">
+  <!-- ================= FAVICON ================= -->
+  <!-- Favicon is the small icon shown in the browser tab next to the title.
+       All four lines below ensure the icon works on every browser and device. -->
+  <!-- 32x32 — standard size shown in desktop browser tabs -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
+  <!-- 16x16 — smaller size for older browsers and compressed tabs -->
+  <link rel="icon" type="image/png" sizes="16x16" href="images/logo.png">
+  <!-- shortcut icon — legacy fallback for Internet Explorer and older browsers -->
+  <link rel="shortcut icon" href="images/logo.png">
+  <!-- apple-touch-icon — used when user adds site to iPhone/iPad home screen -->
+  <link rel="apple-touch-icon" href="images/logo.png">
 
-  <!-- Stylesheet -->
+  <!-- ================= FONTS ================= -->
+  <!-- Plus Jakarta Sans — premium font replacing Arial.
+       Weights loaded: 300 (light), 400 (regular), 500 (medium),
+       600 (semi-bold), 700 (bold), 800 (extra-bold).
+       display=swap shows fallback font until this loads — no blank text. -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- ================= STYLESHEET ================= -->
+  <!-- All custom CSS lives in style.css — linked here -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- Font Awesome — icons for navbar, social links, modal tabs,
-       repo cards (star, fork, arrow) and modal link buttons -->
+  <!-- ================= FONT AWESOME ================= -->
+  <!-- Icon library used for all icons: GitHub, LinkedIn, arrows,
+       stars, graduation cap, envelope etc. throughout the site. -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- ================= EMAILJS ================= -->
+  <!-- EmailJS allows the contact form to send emails directly to Gmail
+       without any backend server. Loaded in <head> (not at bottom)
+       so it initializes immediately — prevents 15-20s delay on first send. -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <!-- ================= GOOGLE ANALYTICS ================= -->
+  <!-- Tracks how many people visit your portfolio, which pages they view,
+       where they come from (LinkedIn, Google, WhatsApp etc.) and more.
+       Replace BOTH instances of G-XXXXXXXXXX with your GA4 Measurement ID.
+       Get your ID: analytics.google.com → Admin → Data Streams → Web -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX'); /* ← replace with your GA4 Measurement ID */
+  </script>
+
 </head>
 
 <body>
 
-<!-- Thin progress bar at the top that fills as the user scrolls -->
+<!-- ================= PRELOADER ================= -->
+<!-- Full-screen dark overlay shown while the page is loading.
+     Contains a spinning gradient ring around your logo image.
+     JavaScript adds .hidden class after window.load fires,
+     which triggers a CSS fade-out transition. -->
+<div id="preloader">
+  <!-- .preloader-inner holds the ring and logo together, centered -->
+  <div class="preloader-inner">
+    <!-- Spinning conic-gradient ring — CSS animation rotates it -->
+    <div class="preloader-ring"></div>
+    <!-- Your avatar logo centered inside the ring -->
+    <img src="images/logo.png" alt="VJ" class="preloader-logo">
+  </div>
+  <!-- Pulsing "Loading..." text below the ring -->
+  <p class="preloader-text">Loading...</p>
+</div>
+
+
+<!-- ================= CURSOR GLOW ================= -->
+<!-- A small glowing dot that follows the mouse cursor.
+     JavaScript moves it on every mousemove event.
+     CSS uses translate(-50%,-50%) to center it on the cursor tip. -->
+<div id="cursorGlow"></div>
+
+
+<!-- ================= SCROLL PROGRESS BAR ================= -->
+<!-- Thin gradient bar fixed at the very top of the page.
+     Width (0% to 100%) is updated by JavaScript on every scroll event
+     to show how far down the page the user has scrolled. -->
 <div id="scrollBar"></div>
 
-<!-- Full-screen canvas for the animated particle background -->
+
+<!-- ================= BACK TO TOP BUTTON ================= -->
+<!-- Floating circular button fixed at bottom-right corner.
+     Hidden by default (opacity:0) — JavaScript adds .show class
+     when user scrolls more than 300px down the page.
+     Clicking it smoothly scrolls back to the top. -->
+<button id="backToTop" aria-label="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+
+<!-- ================= WHATSAPP FLOATING BUTTON ================= -->
+<!-- Green floating button fixed above the back-to-top button.
+     Hidden by default — shows after user scrolls 300px.
+     Clicking opens a WhatsApp chat with a pre-filled message.
+     IMPORTANT: Replace 91XXXXXXXXXX with your number:
+     91 = India country code + your 10-digit mobile number
+     Example: 919876543210 for number 9876543210 -->
+<a id="whatsappBtn"
+   href="https://wa.me/91XXXXXXXXXX?text=Hi%20Vishesh%2C%20I%20saw%20your%20portfolio!"
+   target="_blank"
+   aria-label="Chat on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+
+<!-- ================= MOBILE NAV OVERLAY ================= -->
+<!-- Dark semi-transparent backdrop that appears behind the
+     slide-in mobile navigation menu.
+     JavaScript adds/removes .open class to show/hide it.
+     Clicking this overlay closes the nav menu. -->
+<div id="navOverlay" class="nav-overlay"></div>
+
+
+<!-- ================= PARTICLE CANVAS ================= -->
+<!-- Full-screen HTML5 canvas element fixed behind all content.
+     JavaScript draws and animates 100 floating blue dots on it.
+     z-index:-1 keeps it behind everything else on the page. -->
 <canvas id="particles"></canvas>
 
 
 <!-- ================= NAVBAR ================= -->
-<nav class="navbar">
+<!-- Fixed navigation bar at the top of the page.
+     JavaScript adds .scrolled class after 80px scroll,
+     which reduces padding (scroll-shrink effect) and
+     intensifies the glassmorphism blur background. -->
+<nav class="navbar" id="navbar">
 
-  <!-- Logo — clicking returns to the hero section -->
- <a href="#hero" class="logo">
-  <img src="images/logo.png" alt="Vishesh Jaiswal" class="logo-img">
-</a>
+  <!-- Logo — your avatar image. Clicking it scrolls back to the hero section. -->
+  <a href="#hero" class="logo">
+    <img src="images/logo.png" alt="Vishesh Jaiswal" class="logo-img">
+  </a>
 
-  <!-- Hamburger button — mobile only (hidden on desktop via CSS).
-       JS toggles "open" class: animates 3 bars → X and shows the dropdown. -->
+  <!-- Hamburger button — only visible on mobile (hidden on desktop via CSS).
+       Three <span> bars animate into an X when .open class is added by JS.
+       Clicking toggles the slide-in nav menu. -->
   <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span> <!-- top bar -->
+    <span></span> <!-- middle bar — fades out on open -->
+    <span></span> <!-- bottom bar -->
   </button>
 
-  <!-- Nav links — id="navLinks" lets JS toggle the "open" class on mobile -->
+  <!-- Navigation links list.
+       On mobile: hidden by default, slides in from right when .open is added.
+       JS highlights the active link based on scroll position.
+       "Certifications" links to the certifications section added in v4. -->
   <ul class="nav-links" id="navLinks">
     <li><a href="#hero">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#timeline">Timeline</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#certifications">Certifications</a></li>
     <li><a href="#github">GitHub</a></li>
-    <li><a href="#contact" class="nav-btn">Contact</a></li>
+    <!-- Contact styled same as all other links — no special class needed -->
+    <li><a href="#contact">Contact</a></li>
   </ul>
 
-  <!-- Dark / Light mode toggle -->
-  <button id="themeToggle">☀️</button>
+  <!-- Dark/Light mode toggle button.
+       Clicking it toggles .light-mode class on <body>.
+       JS also saves preference to localStorage so it persists on reload.
+       Shows ☀️ in dark mode and 🌙 in light mode. -->
+  <button id="themeToggle" aria-label="Toggle theme">☀️</button>
 
 </nav>
 
 
-<!-- ================= HERO ================= -->
+<!-- ================= HERO SECTION ================= -->
+<!-- Full-viewport first section the user sees on load.
+     Contains: Open to Work badge, profile photo with rotating ring,
+     animated name, typing effect, stat counters, resume buttons, social icons. -->
 <section id="hero" class="hero">
 
-  <!-- Decorative radial glow behind the hero content -->
+  <!-- Decorative radial glow — a blurred blue circle behind the content.
+       position:absolute, z-index:-1 so it stays behind text. -->
   <div class="hero-glow"></div>
 
-  <!-- Profile photo with spinning RGB ring -->
+  <!-- "Open to Work" badge — pulsing green dot signals availability.
+       The .otw-dot inside it has a CSS pulse animation. -->
+  <div class="open-to-work">
+    <span class="otw-dot"></span>
+    Open to Work
+  </div>
+
+  <!-- Profile photo container.
+       .profile-circle::before = spinning conic-gradient ring around photo.
+       .profile-circle::after  = white inner circle separating photo from ring.
+       The actual <img> sits on top via z-index:2. -->
   <div class="profile-box">
     <div class="profile-circle">
-      <img src="images/profile.jpeg" loading="lazy" alt="Vishesh Jaiswal">
+      <!-- loading="lazy" defers image load until near viewport — faster page load -->
+      <img src="images/profile.png" loading="lazy" alt="Vishesh Jaiswal">
     </div>
   </div>
 
-  <h1>Hello, It's Me <span>Vishesh Jaiswal</span></h1>
+  <!-- Main heading. .gradient-name applies an animated color-shifting
+       gradient to "Vishesh Jaiswal" text via background-clip:text. -->
+  <h1>Hello, It's Me <span class="gradient-name">Vishesh Jaiswal</span></h1>
 
-  <!-- Typing animation — text is injected by JavaScript -->
+  <!-- Typing animation container — starts empty.
+       JavaScript types and erases role phrases like
+       "I am a MERN Stack Developer" into this element. -->
   <h2 class="typing"></h2>
 
   <p>Curious web developer passionate about designing and building modern,
   interactive web experiences and more...</p>
 
-  <!-- Resume buttons -->
-  <div class="hero-buttons">
-    <a href="resume/Vishesh_Jaiswal.pdf" class="btn">Download Resume</a>
-    <a href="resume/Vishesh_Jaiswal.pdf" class="btn" target="_blank">View Resume</a>
+  <!-- Stat counters row — three numbers that count up from 0 on page load.
+       data-target sets the final number JavaScript counts to.
+       .stat-divider is a vertical line between stats. -->
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-number" data-target="3">0</span>
+      <span class="stat-plus">+</span>
+      <p>Projects</p>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-number" data-target="1">0</span>
+      <p>Internship</p>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-number" data-target="2">0</span>
+      <span class="stat-plus">+</span>
+      <p>Years Coding</p>
+    </div>
   </div>
 
-  <!-- Social links -->
+  <!-- Resume action buttons.
+       .btn-primary = filled gradient pill (Download).
+       .btn-outline = border-only pill (View).
+       download attribute triggers file download instead of opening in browser. -->
+  <div class="hero-buttons">
+    <a href="resume/Vishesh_Jaiswal.pdf" class="btn btn-primary" download>
+      <i class="fas fa-download"></i> Download Resume
+    </a>
+    <a href="resume/Vishesh_Jaiswal.pdf" class="btn btn-outline" target="_blank">
+      <i class="fas fa-eye"></i> View Resume
+    </a>
+  </div>
+
+  <!-- Social media icon links.
+       Each is a circle with an icon inside — hover lifts and glows.
+       aria-label used for accessibility (screen readers). -->
   <div class="social-icons">
-    <a href="https://github.com/Visheshjais" target="_blank"><i class="fab fa-github"></i></a>
-    <a href="https://www.linkedin.com/in/vishesh-j-a085b3236/" target="_blank"><i class="fab fa-linkedin"></i></a>
-    <a href="https://www.instagram.com/vishesh.jswl/?hl=en" target="_blank"><i class="fab fa-instagram"></i></a>
-    <a href="mailto:jaiswalvishesh1214@gmail.com"><i class="fas fa-envelope"></i></a>
+    <a href="https://github.com/Visheshjais" target="_blank" aria-label="GitHub">
+      <i class="fab fa-github"></i>
+    </a>
+    <a href="https://www.linkedin.com/in/vishesh-j-a085b3236/" target="_blank" aria-label="LinkedIn">
+      <i class="fab fa-linkedin"></i>
+    </a>
+    <a href="https://www.instagram.com/vishesh.jswl/?hl=en" target="_blank" aria-label="Instagram">
+      <i class="fab fa-instagram"></i>
+    </a>
+    <a href="mailto:jaiswalvishesh1214@gmail.com" aria-label="Email">
+      <i class="fas fa-envelope"></i>
+    </a>
   </div>
 
 </section>
 
 
-<!-- ================= ABOUT ================= -->
+<!-- ================= ABOUT SECTION ================= -->
+<!-- Two-column layout: bio text on left, highlight cards on right.
+     .reveal class: starts hidden (opacity:0, translateY:60px),
+     animates in when scrolled into view by JavaScript. -->
 <section id="about" class="about reveal">
 
   <h2>About Me</h2>
 
+  <!-- Grid container: 1fr 1fr on desktop, single column on mobile -->
   <div class="about-container">
 
-    <!-- Bio paragraphs -->
+    <!-- Left column: bio paragraphs -->
     <div class="about-text">
       <p>Hi, I'm <strong>Vishesh Jaiswal</strong> 👋 — a passionate web developer who enjoys building modern, responsive, and user-friendly web applications.</p>
       <p>I recently graduated with a <strong>B.Tech in Computer Science</strong> from Jaypee University of Information Technology. My primary focus is <strong>MERN stack development</strong>, where I build scalable web applications using React, Node.js, Express, and MongoDB.</p>
       <p>I love transforming ideas into real digital experiences through clean design, efficient code, and creative problem solving.</p>
     </div>
 
-    <!-- Highlight cards -->
+    <!-- Right column: 2x2 grid of highlight cards.
+         Each card has an icon circle, title, and detail text.
+         Hover: lifts up and shows a glowing border. -->
     <div class="about-highlights">
+
+      <!-- Education card -->
       <div class="highlight-card">
-        <h3>🎓 Education</h3>
+        <div class="highlight-icon"><i class="fas fa-graduation-cap"></i></div>
+        <h3>Education</h3>
         <p>B.Tech CSE</p>
         <p>Jaypee University of Information Technology</p>
       </div>
+
+      <!-- Focus / specialization card -->
       <div class="highlight-card">
-        <h3>💻 Focus</h3>
+        <div class="highlight-icon"><i class="fas fa-laptop-code"></i></div>
+        <h3>Focus</h3>
         <p>MERN Stack Development</p>
       </div>
+
+      <!-- Interests card -->
       <div class="highlight-card">
-        <h3>🚀 Interests</h3>
+        <div class="highlight-icon"><i class="fas fa-rocket"></i></div>
+        <h3>Interests</h3>
         <p>Web Development</p>
         <p>Cloud Computing</p>
       </div>
+
+      <!-- Hobbies card -->
       <div class="highlight-card">
-        <h3>🏏 Hobbies</h3>
-        <p>Playing Cricket</p>
-        <p>🎧 Listening to Music</p>
+        <div class="highlight-icon"><i class="fas fa-music"></i></div>
+        <h3>Hobbies</h3>
+        <p>Playing Cricket 🏏</p>
+        <p>Listening to Music 🎧</p>
       </div>
+
     </div>
 
   </div>
@@ -140,53 +355,222 @@
 </section>
 
 
-<!-- ================= SKILLS ================= -->
-<!-- data-progress on each .progress-bar is read by JS to set the fill width -->
-<section id="skills" class="skills">
+<!-- ================= SKILLS SECTION ================= -->
+<!-- Grid of skill cards — each shows circular SVG ring gauges
+     with a tech icon inside, skill name, and percentage.
+     Rings animate (fill) when scrolled into view via JavaScript.
+     circumference = 2π × 32 ≈ 201px; JS sets stroke-dashoffset. -->
+<section id="skills" class="skills reveal">
 
   <h2>Skills</h2>
 
   <div class="skills-grid">
 
+    <!-- Languages card: HTML, CSS, JavaScript, C/C++ -->
     <div class="skill-card">
-      <h3>Languages</h3>
-      <div class="skill"><p>C</p>          <div class="progress"><div class="progress-bar" data-progress="85"></div></div></div>
-      <div class="skill"><p>C++</p>        <div class="progress"><div class="progress-bar" data-progress="85"></div></div></div>
-      <div class="skill"><p>HTML</p>       <div class="progress"><div class="progress-bar" data-progress="95"></div></div></div>
-      <div class="skill"><p>CSS</p>        <div class="progress"><div class="progress-bar" data-progress="90"></div></div></div>
-      <div class="skill"><p>JavaScript</p><div class="progress"><div class="progress-bar" data-progress="85"></div></div></div>
+      <h3><i class="fas fa-code"></i> Languages</h3>
+      <div class="skill-rings">
+
+        <!-- Each .ring-item has: SVG ring + icon overlay + label + percentage -->
+        <!-- data-progress="95" tells JS to fill ring to 95% -->
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/><!-- grey track -->
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="95"/><!-- filled arc -->
+            </svg>
+            <span class="ring-icon"><i class="fab fa-html5"></i></span>
+          </div>
+          <p>HTML</p><small>95%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="90"/>
+            </svg>
+            <span class="ring-icon"><i class="fab fa-css3-alt"></i></span>
+          </div>
+          <p>CSS</p><small>90%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="85"/>
+            </svg>
+            <span class="ring-icon"><i class="fab fa-js"></i></span>
+          </div>
+          <p>JavaScript</p><small>85%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="85"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-copyright"></i></span>
+          </div>
+          <p>C / C++</p><small>85%</small>
+        </div>
+
+      </div>
     </div>
 
+    <!-- Frontend card: React, Tailwind, Bootstrap -->
     <div class="skill-card">
-      <h3>Frontend</h3>
-      <div class="skill"><p>React.js</p>    <div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
-      <div class="skill"><p>Tailwind CSS</p><div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
-      <div class="skill"><p>Bootstrap</p>   <div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+      <h3><i class="fas fa-desktop"></i> Frontend</h3>
+      <div class="skill-rings">
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="80"/>
+            </svg>
+            <span class="ring-icon"><i class="fab fa-react"></i></span>
+          </div>
+          <p>React.js</p><small>80%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="75"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-wind"></i></span>
+          </div>
+          <p>Tailwind</p><small>75%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="75"/>
+            </svg>
+            <span class="ring-icon"><i class="fab fa-bootstrap"></i></span>
+          </div>
+          <p>Bootstrap</p><small>75%</small>
+        </div>
+
+      </div>
     </div>
 
+    <!-- Backend card: Node.js, Express.js -->
     <div class="skill-card">
-      <h3>Backend</h3>
-      <div class="skill"><p>Node.js</p>   <div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
-      <div class="skill"><p>Express.js</p><div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+      <h3><i class="fas fa-server"></i> Backend</h3>
+      <div class="skill-rings">
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="80"/>
+            </svg>
+            <span class="ring-icon"><i class="fab fa-node-js"></i></span>
+          </div>
+          <p>Node.js</p><small>80%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="75"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-network-wired"></i></span>
+          </div>
+          <p>Express.js</p><small>75%</small>
+        </div>
+
+      </div>
     </div>
 
+    <!-- Databases card: MongoDB, MySQL -->
     <div class="skill-card">
-      <h3>Databases</h3>
-      <div class="skill"><p>MongoDB</p><div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
-      <div class="skill"><p>MySQL</p>  <div class="progress"><div class="progress-bar" data-progress="70"></div></div></div>
+      <h3><i class="fas fa-database"></i> Databases</h3>
+      <div class="skill-rings">
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="80"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-leaf"></i></span>
+          </div>
+          <p>MongoDB</p><small>80%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="70"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-table"></i></span>
+          </div>
+          <p>MySQL</p><small>70%</small>
+        </div>
+
+      </div>
     </div>
 
+    <!-- Tools & Tech card: Git, Firebase, JWT -->
     <div class="skill-card">
-      <h3>Tools & Technologies</h3>
-      <div class="skill"><p>Git</p>          <div class="progress"><div class="progress-bar" data-progress="80"></div></div></div>
-      <div class="skill"><p>Mongoose</p>     <div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
-      <div class="skill"><p>Firebase Auth</p><div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
-      <div class="skill"><p>JWT</p>          <div class="progress"><div class="progress-bar" data-progress="75"></div></div></div>
+      <h3><i class="fas fa-tools"></i> Tools & Tech</h3>
+      <div class="skill-rings">
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="80"/>
+            </svg>
+            <span class="ring-icon"><i class="fab fa-git-alt"></i></span>
+          </div>
+          <p>Git</p><small>80%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="75"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-fire"></i></span>
+          </div>
+          <p>Firebase</p><small>75%</small>
+        </div>
+
+        <div class="ring-item">
+          <div class="ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="32"/>
+              <circle class="ring-fill" cx="40" cy="40" r="32" data-progress="75"/>
+            </svg>
+            <span class="ring-icon"><i class="fas fa-key"></i></span>
+          </div>
+          <p>JWT</p><small>75%</small>
+        </div>
+
+      </div>
     </div>
 
-    <div class="skill-card">
-      <h3>Areas of Interest</h3>
-      <p>Web Development • Cloud Computing</p>
+    <!-- Areas of Interest card — tag pills instead of rings -->
+    <div class="skill-card skill-card-interest">
+      <h3><i class="fas fa-star"></i> Areas of Interest</h3>
+      <!-- Interest tags are pill-shaped spans with hover effects -->
+      <div class="interest-tags">
+        <span><i class="fas fa-cubes"></i> Full Stack Web Development (MERN Stack)</span>
+        <span><i class="fas fa-swatchbook"></i> UI/UX Design</span>
+        <span><i class="fas fa-mobile-alt"></i> Responsive Design</span>
+      </div>
     </div>
 
   </div>
@@ -194,27 +578,36 @@
 </section>
 
 
-<!-- ================= TIMELINE ================= -->
+<!-- ================= TIMELINE SECTION ================= -->
+<!-- Vertical timeline with a centered connecting line.
+     Each item has a circular icon on the line and a content card beside it.
+     On mobile the line moves to the left side for a cleaner layout. -->
 <section id="timeline" class="timeline reveal">
 
   <h2>Education & Experience</h2>
 
   <div class="timeline-container">
 
+    <!-- Education entry -->
     <div class="timeline-item">
-      <div class="timeline-icon">🎓</div>
+      <!-- Circular icon that sits on the vertical timeline line -->
+      <div class="timeline-icon"><i class="fas fa-graduation-cap"></i></div>
+      <!-- Content card with degree, university, and date range -->
       <div class="timeline-content">
         <h3>B.Tech Computer Science</h3>
-        <p>Jaypee University of Information Technology</p>
+        <p>Jaypee University of Information Technology, Waknaghat</p>
         <span>2021 – 2025</span>
       </div>
     </div>
 
+    <!-- Internship entry — company name sourced from resume -->
     <div class="timeline-item">
-      <div class="timeline-icon">💻</div>
+      <div class="timeline-icon"><i class="fas fa-briefcase"></i></div>
       <div class="timeline-content">
         <h3>Web Development Intern</h3>
-        <p>Built MERN stack applications and modern web interfaces.</p>
+        <!-- Company name displayed with building icon -->
+        <p class="company-name"><i class="fas fa-building"></i> Infowiz Software Solution</p>
+        <p>Built full-stack MERN applications and responsive web interfaces. Worked on React frontend, Node.js/Express backend, and MongoDB database integration.</p>
         <span>June 2024 – July 2024</span>
       </div>
     </div>
@@ -224,45 +617,117 @@
 </section>
 
 
-<!-- ================= PROJECTS ================= -->
-<!-- onclick passes the project key to openProject() in script.js -->
+<!-- ================= PROJECTS SECTION ================= -->
+<!-- Project cards with filter buttons, image overlay, tech tags,
+     and direct GitHub/Live Demo buttons.
+     Each card also opens a full-screen modal with screenshots and video. -->
 <section id="projects" class="projects reveal">
 
   <h2>Projects</h2>
 
+  <!-- Filter buttons — clicking one shows only matching cards.
+       data-filter matches against data-tags on each .project-card.
+       JS adds/removes .hidden class on non-matching cards.
+       "active" class on "All" button is set by default. -->
+  <div class="project-filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="react">React</button>
+    <button class="filter-btn" data-filter="node">Node.js</button>
+    <button class="filter-btn" data-filter="python">Python</button>
+    <button class="filter-btn" data-filter="mongodb">MongoDB</button>
+  </div>
+
   <div class="project-container">
 
-    <!-- Project 1 -->
-    <div class="project-card tilt" onclick="openProject('groovix')">
-      <!-- Play badge: fades in on hover — hints at screenshots + video in modal -->
-      <div class="project-play-badge"><i class="fas fa-play-circle"></i></div>
-      <img src="images/groovix 1.png" loading="lazy" class="project-img" alt="Groovix Music Player">
-      <h3>Groovix Music Player</h3>
-      <p>Spotify-inspired music streaming web application with interactive UI and music player functionality.</p>
-      <div class="tech-stack">
-        <span>React</span><span>Node.js</span><span>MongoDB</span>
+    <!-- ===== PROJECT 1: Groovix Music Player ===== -->
+    <!-- data-tags used by filter JS to show/hide this card.
+         onclick calls openProject() to open the modal. -->
+    <div class="project-card" data-tags="react node mongodb" onclick="openProject('groovix')">
+
+      <!-- Featured badge — gold star badge on best project -->
+      <div class="featured-badge"><i class="fas fa-star"></i> Featured</div>
+
+      <!-- Image wrapper with hover overlay -->
+      <div class="project-img-wrap">
+        <img src="images/groovix 1.png" loading="lazy" class="project-img" alt="Groovix Music Player">
+        <!-- Overlay appears on hover — prompts user to click for details -->
+        <div class="project-overlay"><p>View Details</p></div>
+      </div>
+
+      <div class="project-body">
+        <h3>Groovix Music Player</h3>
+        <p>Spotify-inspired music streaming web application with interactive UI and music player functionality.</p>
+
+        <!-- Tech stack tags — pill labels showing technologies used -->
+        <div class="tech-stack">
+          <span>React</span><span>Node.js</span><span>MongoDB</span>
+        </div>
+
+        <!-- Direct action buttons on card.
+             event.stopPropagation() prevents the card's onclick from
+             also firing when these buttons are clicked. -->
+        <div class="card-actions">
+          <!-- GitHub — dark filled pill with border -->
+          <a href="https://github.com/Visheshjais" target="_blank"
+             onclick="event.stopPropagation()" class="card-btn card-btn-github">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <!-- Live Demo — gradient filled pill -->
+          <a href="#" target="_blank"
+             onclick="event.stopPropagation()" class="card-btn card-btn-demo">
+            <i class="fas fa-external-link-alt"></i> Live Demo
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- Project 2 -->
-    <div class="project-card tilt" onclick="openProject('unmasking')">
-      <div class="project-play-badge"><i class="fas fa-play-circle"></i></div>
-      <img src="images/Unmasking 1.png" loading="lazy" class="project-img" alt="Unmasking Illusion">
-      <h3>Unmasking Illusion</h3>
-      <p>Deepfake detection system using machine learning to detect manipulated faces and videos.</p>
-      <div class="tech-stack">
-        <span>Python</span><span>PyTorch</span><span>JavaScript</span>
+    <!-- ===== PROJECT 2: Unmasking Illusion ===== -->
+    <div class="project-card" data-tags="python" onclick="openProject('unmasking')">
+      <div class="project-img-wrap">
+        <img src="images/Unmasking 1.png" loading="lazy" class="project-img" alt="Unmasking Illusion">
+        <div class="project-overlay"><p>View Details</p></div>
+      </div>
+      <div class="project-body">
+        <h3>Unmasking Illusion</h3>
+        <p>Deepfake detection system using machine learning to detect manipulated faces and videos.</p>
+        <div class="tech-stack">
+          <span>Python</span><span>PyTorch</span><span>JavaScript</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://github.com/Visheshjais" target="_blank"
+             onclick="event.stopPropagation()" class="card-btn card-btn-github">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a href="#" target="_blank"
+             onclick="event.stopPropagation()" class="card-btn card-btn-demo">
+            <i class="fas fa-external-link-alt"></i> Live Demo
+          </a>
+        </div>
       </div>
     </div>
 
-    <!-- Project 3 -->
-    <div class="project-card tilt" onclick="openProject('translation')">
-      <div class="project-play-badge"><i class="fas fa-play-circle"></i></div>
-      <img src="images/All in One 1.jpg" loading="lazy" class="project-img" alt="All-in-One Translation">
-      <h3>All-in-One Translation</h3>
-      <p>Multilingual translation platform supporting 50+ languages with multiple translation methods.</p>
-      <div class="tech-stack">
-        <span>Node.js</span><span>JavaScript</span><span>HTML</span>
+    <!-- ===== PROJECT 3: All-in-One Translation ===== -->
+    <div class="project-card" data-tags="node" onclick="openProject('translation')">
+      <div class="project-img-wrap">
+        <img src="images/All in One 1.jpg" loading="lazy" class="project-img" alt="All-in-One Translation">
+        <div class="project-overlay"><p>View Details</p></div>
+      </div>
+      <div class="project-body">
+        <h3>All-in-One Translation</h3>
+        <p>Multilingual translation platform supporting 50+ languages with multiple translation methods.</p>
+        <div class="tech-stack">
+          <span>Node.js</span><span>JavaScript</span><span>HTML</span>
+        </div>
+        <div class="card-actions">
+          <a href="https://github.com/Visheshjais" target="_blank"
+             onclick="event.stopPropagation()" class="card-btn card-btn-github">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a href="#" target="_blank"
+             onclick="event.stopPropagation()" class="card-btn card-btn-demo">
+            <i class="fas fa-external-link-alt"></i> Live Demo
+          </a>
+        </div>
       </div>
     </div>
 
@@ -271,30 +736,104 @@
 </section>
 
 
-<!-- ================= GITHUB REPOS ================= -->
-<!-- Cards injected here by JavaScript using the GitHub REST API -->
-<section id="github" class="github reveal">
-  <h2>My GitHub Repositories</h2>
-  <div id="repos"></div>
+<!-- ================= CERTIFICATIONS SECTION ================= -->
+<!-- Grid of certification cards — each shows the cert icon, name,
+     platform/instructor, and year badge.
+     Update these with your actual certificate names and platforms. -->
+<section id="certifications" class="certifications reveal">
+
+  <h2>Certifications</h2>
+
+  <div class="cert-grid">
+
+    <!-- Cert 1: React -->
+    <div class="cert-card">
+      <div class="cert-icon"><i class="fab fa-react"></i></div>
+      <h3>React — The Complete Guide</h3>
+      <p>Udemy · Maximilian Schwarzmüller</p>
+      <span class="cert-year">2024</span>
+    </div>
+
+    <!-- Cert 2: Node.js -->
+    <div class="cert-card">
+      <div class="cert-icon"><i class="fab fa-node-js"></i></div>
+      <h3>Node.js, Express & MongoDB Bootcamp</h3>
+      <p>Udemy · Jonas Schmedtmann</p>
+      <span class="cert-year">2024</span>
+    </div>
+
+    <!-- Cert 3: JavaScript -->
+    <div class="cert-card">
+      <div class="cert-icon"><i class="fab fa-js"></i></div>
+      <h3>JavaScript — The Complete Guide</h3>
+      <p>Udemy · Maximilian Schwarzmüller</p>
+      <span class="cert-year">2023</span>
+    </div>
+
+    <!-- Cert 4: Internship certificate -->
+    <div class="cert-card">
+      <div class="cert-icon"><i class="fas fa-laptop-code"></i></div>
+      <h3>Web Development Internship</h3>
+      <p>Infowiz Software Solution</p>
+      <span class="cert-year">2024</span>
+    </div>
+
+  </div>
+
 </section>
 
 
-<!-- ================= CONTACT ================= -->
-<!-- Submission handled by Netlify via data-netlify="true" -->
+<!-- ================= GITHUB REPOS SECTION ================= -->
+<!-- Empty div — JavaScript fetches your latest 6 non-forked repos
+     from the GitHub API and injects repo cards here dynamically. -->
+<section id="github" class="github reveal">
+  <h2>My GitHub Repositories</h2>
+  <div id="repos"></div><!-- JS injects repo cards here -->
+</section>
+
+
+<!-- ================= CONTACT SECTION ================= -->
 <section id="contact" class="contact reveal">
 
   <h2>Contact Me</h2>
 
-  <form name="contact" method="POST" data-netlify="true">
-    <input type="hidden" name="form-name" value="contact">
+  <!-- Contact info row — shown above the form -->
+  <div class="contact-info">
+
+    <!-- Copy email button — clicking copies email to clipboard.
+         id="copyEmailBtn" is targeted by JS.
+         .copy-icon on the right highlights on hover. -->
+    <div class="contact-info-item copy-email" id="copyEmailBtn" title="Click to copy email">
+      <i class="fas fa-envelope"></i>
+      <span>jaiswalvishesh1214@gmail.com</span>
+      <!-- Copy icon — appears on right, highlights on hover -->
+      <i class="fas fa-copy copy-icon"></i>
+    </div>
+
+    <!-- LinkedIn profile link — opens in new tab -->
+    <a href="https://linkedin.com/in/vishesh-j-a085b3236" target="_blank" class="contact-info-item">
+      <i class="fab fa-linkedin"></i>
+      <span>Vishesh Jaiswal</span>
+    </a>
+
+  </div>
+
+  <!-- Toast notification — shown briefly after email copy.
+       JS adds .show class which makes it visible, then removes it after 2.5s. -->
+  <div id="copyToast">✅ Email copied to clipboard!</div>
+
+  <!-- Contact form — EmailJS sends data directly to Gmail.
+       Replace YOUR_PUBLIC_KEY and YOUR_TEMPLATE_ID in script.js.
+       name, email, message fields map to EmailJS template variables. -->
+  <form id="contactForm">
     <input  type="text"  name="name"    placeholder="Your Name"    required>
     <input  type="email" name="email"   placeholder="Your Email"   required>
     <textarea            name="message" placeholder="Your Message" required></textarea>
-    <!-- contact-btn: pill shape, animated gradient, shine sweep, pulsing glow -->
+    <!-- .contact-btn has pulsing glow animation + shine sweep effect -->
     <button type="submit" class="btn contact-btn">✉ Send Message</button>
   </form>
 
-  <!-- Confirmation message injected by JavaScript after submission -->
+  <!-- Status message injected by JS: success (green) or error (red) -->
   <p id="formMessage"></p>
 
 </section>
@@ -302,21 +841,36 @@
 
 <!-- ================= FOOTER ================= -->
 <footer>
-  <p>© 2026 Vishesh Jaiswal</p>
-  <p>Built with HTML, CSS & JavaScript</p>
+  <!-- Designer credit -->
+  <p>Designed &amp; Built by <strong>Vishesh Jaiswal</strong></p>
+  <!-- Footer social links -->
+  <div class="footer-links">
+    <a href="https://github.com/Visheshjais" target="_blank">
+      <i class="fab fa-github"></i> GitHub
+    </a>
+    <a href="https://linkedin.com/in/vishesh-j-a085b3236" target="_blank">
+      <i class="fab fa-linkedin"></i> LinkedIn
+    </a>
+  </div>
+  <!-- Copyright with heartbeat animated emoji -->
+  <p>© 2026 · Made with <span class="heart">❤️</span></p>
 </footer>
 
 
 <!-- ================= PROJECT MODAL ================= -->
-<!-- Full-screen overlay opened when a project card is clicked -->
+<!-- Full-screen overlay that opens when a project card is clicked.
+     display:none by default — JS sets display:flex to show it.
+     Clicking the dark backdrop (outside modal card) closes it.
+     Pressing Escape key also closes it. -->
 <div id="projectModal" class="project-modal">
   <div class="modal-content">
 
-    <!-- Close button -->
-    <span class="close-btn" onclick="closeProject()">×</span>
+    <!-- Close button — top right corner, JS calls closeProject() -->
+    <span class="close-btn" onclick="closeProject()" aria-label="Close">×</span>
 
-    <!-- Tab switcher: Screenshots | Demo Video
-         JS toggles "active" class and shows/hides the panels below -->
+    <!-- Tab switcher: Screenshots | Demo Video.
+         JS toggles .active class and shows/hides panels below.
+         Both tabs styled as gradient pills — same as card buttons. -->
     <div class="modal-tabs">
       <button class="modal-tab active" id="tabImages" onclick="switchTab('images')">
         <i class="fas fa-images"></i> Screenshots
@@ -326,27 +880,28 @@
       </button>
     </div>
 
-    <!-- Screenshots panel — shown by default -->
+    <!-- Screenshots panel — shown by default.
+         Left/right buttons navigate between images.
+         Dot indicators below image are built by JS. -->
     <div id="panelImages" class="modal-panel">
       <div class="slider">
         <button class="slide-btn left"  onclick="prevSlide()">❮</button>
-        <img id="sliderImage" alt="Project Screenshot">
+        <img id="sliderImage" alt="Project Screenshot"><!-- src set by JS -->
         <button class="slide-btn right" onclick="nextSlide()">❯</button>
       </div>
-      <!-- Dot indicators: built dynamically by JS, one per screenshot image -->
+      <!-- Dot indicators — one per screenshot, built dynamically by JS -->
       <div id="sliderDots" class="slider-dots"></div>
     </div>
 
-    <!-- Video panel — hidden by default, shown when Video tab is clicked.
-         Shows the HTML5 player if videoSrc is set, otherwise shows fallback. -->
+    <!-- Video panel — hidden by default, shown when Video tab clicked.
+         preload="metadata" only loads video duration/thumbnail until play. -->
     <div id="panelVideo" class="modal-panel" style="display:none;">
       <div class="video-wrapper">
-        <!-- preload="metadata" loads only duration/thumbnail until play is pressed -->
         <video id="modalVideo" controls preload="metadata">
-          <source id="modalVideoSrc" src="" type="video/mp4">
+          <source id="modalVideoSrc" src="" type="video/mp4"><!-- src set by JS -->
           Your browser does not support the video tag.
         </video>
-        <!-- Fallback shown when videoSrc is "" in projectData -->
+        <!-- Shown when project has no video (videoSrc is empty string) -->
         <div id="noVideoMsg" class="no-video-msg" style="display:none;">
           <i class="fas fa-video-slash"></i>
           <p>Demo video coming soon!</p>
@@ -354,19 +909,27 @@
       </div>
     </div>
 
-    <!-- Modal text — populated by JS when a project opens -->
-    <h2 id="modalTitle"></h2>
-    <p  id="modalDescription"></p>
-    <div id="modalTech"></div>
+    <!-- Project details — all populated by JS when modal opens -->
+    <h2 id="modalTitle"></h2>        <!-- project title -->
+    <p  id="modalDescription"></p>   <!-- project description -->
+    <div id="modalTech"></div>        <!-- tech stack tags -->
 
+    <!-- Modal action buttons.
+         GitHub — outline style (matches card GitHub btn).
+         Live Demo — gradient filled (matches card demo btn). -->
     <div class="modal-links">
-      <a id="modalGithub" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-      <a id="modalDemo"   target="_blank"><i class="fas fa-external-link-alt"></i> Live Demo</a>
+      <a id="modalGithub" target="_blank">
+        <i class="fab fa-github"></i> GitHub
+      </a>
+      <a id="modalDemo" target="_blank">
+        <i class="fas fa-external-link-alt"></i> Live Demo
+      </a>
     </div>
 
   </div>
 </div>
 
+<!-- Main JavaScript file — loaded at bottom so DOM is ready before JS runs -->
 <script src="script.js"></script>
 </body>
 </html>
