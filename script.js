@@ -686,34 +686,54 @@ backToTop.addEventListener("click", () => {
 });
 
 
-/* ================= 19. SOUND EFFECTS ================= */
-/* Creates a tiny synthetic "tick" using the Web Audio API.
-   No external audio files needed — pure JS oscillator.
-   Very quiet (gain 0.06) so it's a subtle accent not an annoyance. */
+/* ================= 19.SOUND EFFECT ================= */
+/* AudioContext created once and reused — fixes browser autoplay policy.
+   Browser blocks sound until first user interaction on the page.
+   We resume the context on first click to unlock audio. */
+
+let audioCtx = null; /* single shared AudioContext — created on first click */
 
 function playClick(){
   try{
-    /* AudioContext is created fresh each time — avoids state issues */
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc      = audioCtx.createOscillator();
-    const gain     = audioCtx.createGain();
+    /* Create AudioContext only once — reusing is more efficient */
+    if(!audioCtx){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    /* Resume context if browser suspended it (autoplay policy) */
+    if(audioCtx.state === "suspended"){
+      audioCtx.resume();
+    }
+
+    const osc  = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
 
     osc.connect(gain);
     gain.connect(audioCtx.destination);
 
     osc.type            = "sine";
-    osc.frequency.value = 620;             /* pitch of the click tone */
+    osc.frequency.value = 620; /* pitch of the tick sound */
 
-    /* Start quiet, ramp down to silence over 80ms */
-    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+    /* Start quiet, fade to silence over 80ms */
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
 
     osc.start(audioCtx.currentTime);
-    osc.stop(audioCtx.currentTime + 0.08); /* stop after 80ms */
+    osc.stop(audioCtx.currentTime + 0.08);
   } catch(e){
-    /* Silently ignore — some browsers block AudioContext without user gesture */
+    /* Silently fail if audio not supported */
   }
 }
+
+/* Unlock audio on very first interaction anywhere on page */
+document.addEventListener("click", () => {
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if(audioCtx.state === "suspended"){
+    audioCtx.resume();
+  }
+}, { once: true }); /* { once:true } removes listener after first trigger */
 
 /* ================= SOUND EFFECTS — WHOLE SITE ================= */
 /* Attaches the subtle click sound to every interactive element.
