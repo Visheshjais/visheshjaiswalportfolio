@@ -468,10 +468,10 @@ const projectData = {
     demo       : "#"
   },
   translation: {
-    title      : "All-in-One Translation",
+    title      : "Lingua AI-All-in-One Translation",
     description: "A multilingual translation platform supporting 50+ languages with a responsive interface and multiple translation methods including text, document, and speech translation.",
     tech       : ["Node.js","JavaScript","HTML","CSS"],
-    images     : ["images/All in One 1.jpg","images/All in One 2.jpg","images/All in One 3.jpg"],
+    images     : ["images/Lingua AI-All-in-One Translation 1.png","images/Lingua AI-All-in-One Translation 2.png","images/Lingua AI-All-in-One Translation 3.png","images/Lingua AI-All-in-One Translation 4.png","images/Lingua AI-All-in-One Translation 5.png","images/Lingua AI-All-in-One Translation 6.png"],
     videoSrc   : "",
     github     : "https://github.com/Visheshjais",
     demo       : "#"
