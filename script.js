@@ -63,7 +63,7 @@ const tabImages    = document.getElementById("tabImages");
 const tabVideo     = document.getElementById("tabVideo");
 const contactForm  = document.getElementById("contactForm");
 const formMessage  = document.getElementById("formMessage");
-const cursorGlow   = document.getElementById("cursorGlow");
+
 const copyEmailBtn = document.getElementById("copyEmailBtn");
 const copyToast    = document.getElementById("copyToast");
 
@@ -75,23 +75,97 @@ const copyToast    = document.getElementById("copyToast");
 emailjs.init("mj63OiHBpYlItbYc0"); /* ← replace with your EmailJS Public Key */
 
 
-/* ================= 4. CURSOR GLOW ================= */
-/* Moves the glowing dot to follow the mouse position.
-   CSS handles centering via translate(-50%,-50%). */
+/* ================= 4. BLACK HOLE CURSOR ================= */
+
+const bhCanvas = document.getElementById("bhCanvas");
+const bhCtx = bhCanvas.getContext("2d");
+bhCanvas.width = innerWidth;
+bhCanvas.height = innerHeight;
+window.addEventListener("resize", () => {
+  bhCanvas.width = innerWidth;
+  bhCanvas.height = innerHeight;
+});
+
+let bhMx = innerWidth/2, bhMy = innerHeight/2;
+let bhBx = bhMx, bhBy = bhMy;
+let bhVel = 0, bhHovering = false, bhT = 0;
+
+// field particles
+const bhPts = Array.from({length: 80}, () => ({
+  x: Math.random() * innerWidth,
+  y: Math.random() * innerHeight,
+  vx: (Math.random() - .5) * .4,
+  vy: (Math.random() - .5) * .4,
+  r: Math.random() * 2 + .5,
+  hue: 180 + Math.random() * 80
+}));
 
 document.addEventListener("mousemove", e => {
-  cursorGlow.style.left = e.clientX + "px";
-  cursorGlow.style.top  = e.clientY + "px";
+  const dx = e.clientX - bhMx, dy = e.clientY - bhMy;
+  bhVel = Math.min(Math.sqrt(dx*dx + dy*dy), 30) / 30;
+  bhMx = e.clientX; bhMy = e.clientY;
 });
+document.addEventListener("mouseleave", () => { bhCanvas.style.opacity = "0"; });
+document.addEventListener("mouseenter", () => { bhCanvas.style.opacity = "1"; });
 
-/* Hide the glow dot when mouse leaves the browser window */
-document.addEventListener("mouseleave", () => { cursorGlow.style.opacity = "0"; });
-document.addEventListener("mouseenter", () => { cursorGlow.style.opacity = "1"; });
-
-/* Restore pointer cursor on all clickable elements */
 document.querySelectorAll("a, button, input, textarea, .project-card, .filter-btn, .copy-email").forEach(el => {
-  el.style.cursor = "pointer";
+  el.addEventListener("mouseenter", () => bhHovering = true);
+  el.addEventListener("mouseleave", () => bhHovering = false);
 });
+
+function animateBlackHole() {
+  bhT += 0.016;
+  bhCtx.clearRect(0, 0, bhCanvas.width, bhCanvas.height);
+  bhBx += (bhMx - bhBx) * .09;
+  bhBy += (bhMy - bhBy) * .09;
+
+  const pullR = bhHovering ? 160 : 100;
+
+  bhPts.forEach(p => {
+    const dx = bhBx - p.x, dy = bhBy - p.y;
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if (d < pullR) {
+      const force = (1 - d/pullR) * (bhHovering ? .04 : .018);
+      p.vx += dx * force; p.vy += dy * force;
+    }
+    p.vx *= .96; p.vy *= .96;
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = innerWidth;
+    if (p.x > innerWidth) p.x = 0;
+    if (p.y < 0) p.y = innerHeight;
+    if (p.y > innerHeight) p.y = 0;
+
+    const d2 = Math.hypot(bhBx - p.x, bhBy - p.y);
+    const bright = Math.max(0, 1 - d2 / (pullR * 1.2));
+    bhCtx.beginPath();
+    bhCtx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+    bhCtx.fillStyle = `hsla(${p.hue},80%,70%,${.2 + bright*.7})`;
+    bhCtx.fill();
+
+    if (d2 < 80) {
+      bhCtx.beginPath(); bhCtx.moveTo(p.x, p.y); bhCtx.lineTo(bhBx, bhBy);
+      bhCtx.strokeStyle = `hsla(${p.hue},80%,60%,${(1-d2/80)*.25})`;
+      bhCtx.lineWidth = .6; bhCtx.stroke();
+    }
+  });
+
+  // event horizon rings
+  for (let r = 0; r < 3; r++) {
+    const rad = (bhHovering ? 24 : 14) + r*10 + Math.sin(bhT*3 + r)*3;
+    bhCtx.beginPath(); bhCtx.arc(bhBx, bhBy, rad, 0, Math.PI*2);
+    bhCtx.strokeStyle = `rgba(130,80,255,${.5 - r*.12})`;
+    bhCtx.lineWidth = 1.5 - r*.3; bhCtx.stroke();
+  }
+
+  // dark core
+  bhCtx.beginPath(); bhCtx.arc(bhBx, bhBy, bhHovering ? 12 : 7, 0, Math.PI*2);
+  bhCtx.fillStyle = "#38bdf8"; bhCtx.fill();
+  bhCtx.beginPath(); bhCtx.arc(bhBx, bhBy, bhHovering ? 12 : 7, 0, Math.PI*2);
+  bhCtx.strokeStyle = "rgba(160,100,255,0.8)"; bhCtx.lineWidth = 1.5; bhCtx.stroke();
+
+  requestAnimationFrame(animateBlackHole);
+}
+animateBlackHole();
 
 
 /* ================= 5. HAMBURGER MENU ================= */
