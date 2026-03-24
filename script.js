@@ -109,6 +109,7 @@ document.addEventListener("mouseleave", () => { bhCanvas.style.opacity = "0"; })
 document.addEventListener("mouseenter", () => { bhCanvas.style.opacity = "1"; });
 
 document.querySelectorAll("a, button, input, textarea, .project-card, .filter-btn, .copy-email").forEach(el => {
+  el.style.cursor = "none";
   el.addEventListener("mouseenter", () => bhHovering = true);
   el.addEventListener("mouseleave", () => bhHovering = false);
 });

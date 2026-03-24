@@ -56,6 +56,13 @@ transition:background 0.4s, color 0.4s;
 cursor:none; /* hide default cursor — custom glow cursor used instead */
 }
 
+/* ================= CURSOR NONE OVERRIDE ================= */
+/* Force hide default cursor on ALL elements including
+   links, buttons and inputs — prevents blue hand appearing */
+
+*{
+cursor:none !important;
+}
 /* ================= 2. LIGHT MODE OVERRIDES ================= */
 
 body.light-mode{ background:#ffffff; color:#0f172a; }
