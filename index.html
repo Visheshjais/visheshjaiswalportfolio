@@ -645,40 +645,30 @@
   <div class="project-container">
 
     <!-- ===== PROJECT 1: Groovix Music Player ===== -->
-    <!-- data-tags used by filter JS to show/hide this card.
-         onclick calls openProject() to open the modal. -->
     <div class="project-card" data-tags="react node mongodb" onclick="openProject('groovix')">
 
       <!-- Featured badge — gold star badge on best project -->
       <div class="featured-badge"><i class="fas fa-star"></i> Featured</div>
 
-      <!-- Image wrapper with hover overlay -->
       <div class="project-img-wrap">
         <img src="images/groovix 1.png" loading="lazy" class="project-img" alt="Groovix Music Player">
-        <!-- Overlay appears on hover — prompts user to click for details -->
         <div class="project-overlay"><p>View Details</p></div>
       </div>
 
       <div class="project-body">
         <h3>Groovix Music Player</h3>
-        <p>Spotify-inspired music streaming web application with interactive UI and music player functionality.</p>
+        <p>Spotify-inspired music streaming web app with JWT auth, playlist management, audio streaming, and a fully interactive player UI.</p>
 
-        <!-- Tech stack tags — pill labels showing technologies used -->
         <div class="tech-stack">
           <span>React</span><span>Node.js</span><span>MongoDB</span>
         </div>
 
-        <!-- Direct action buttons on card.
-             event.stopPropagation() prevents the card's onclick from
-             also firing when these buttons are clicked. -->
         <div class="card-actions">
-          <!-- GitHub — dark filled pill with border -->
-          <a href="https://github.com/Visheshjais" target="_blank"
+          <a href="https://github.com/Visheshjais/Groovix-MuiscPlayer" target="_blank" rel="noopener noreferrer"
              onclick="event.stopPropagation()" class="card-btn card-btn-github">
             <i class="fab fa-github"></i> GitHub
           </a>
-          <!-- Live Demo — gradient filled pill -->
-          <a href="https://groovix-frontend.vercel.app/" target="_blank"
+          <a href="https://groovix-frontend.vercel.app/" target="_blank" rel="noopener noreferrer"
              onclick="event.stopPropagation()" class="card-btn card-btn-demo">
             <i class="fas fa-external-link-alt"></i> Live Demo
           </a>
@@ -686,49 +676,120 @@
       </div>
     </div>
 
-    <!-- ===== PROJECT 2: Unmasking Illusion ===== -->
+    <!-- ===== PROJECT 2: JobHunt Job Portal ===== -->
+    <div class="project-card" data-tags="react node mongodb" onclick="openProject('jobhunt')">
+
+      <div class="featured-badge"><i class="fas fa-star"></i> Featured</div>
+
+      <div class="project-img-wrap">
+        <!-- Replace with your actual JobHunt screenshot once available -->
+        <img src="images/jobhunt 1.png" loading="lazy" class="project-img" alt="JobHunt Job Portal"
+             onerror="this.style.background='linear-gradient(135deg,#1a1a2e,#16213e)'; this.alt='JobHunt';">
+        <div class="project-overlay"><p>View Details</p></div>
+      </div>
+
+      <div class="project-body">
+        <h3>JobHunt — Full Stack Job Portal</h3>
+        <p>Full-stack job portal where freshers can apply to jobs and recruiters can post listings, manage companies, and review applicants. Features Google OAuth 2.0, Cloudinary resume uploads, and an admin dashboard.</p>
+
+        <div class="tech-stack">
+          <span>React</span><span>Node.js</span><span>MongoDB</span><span>Redux</span><span>Google OAuth</span>
+        </div>
+
+        <div class="card-actions">
+          <a href="https://github.com/Visheshjais/JobHunt" target="_blank" rel="noopener noreferrer"
+             onclick="event.stopPropagation()" class="card-btn card-btn-github">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a href="https://job-hunt-frontend-nine.vercel.app/" target="_blank" rel="noopener noreferrer"
+             onclick="event.stopPropagation()" class="card-btn card-btn-demo">
+            <i class="fas fa-external-link-alt"></i> Live Demo
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROJECT 3: Golf Charity Platform ===== -->
+    <div class="project-card" data-tags="react node mongodb" onclick="openProject('golf')">
+
+      <div class="project-img-wrap">
+        <img src="images/golf 1.png" loading="lazy" class="project-img" alt="Golf Charity Platform"
+             onerror="this.style.background='linear-gradient(135deg,#1a2e1a,#163e21)'; this.alt='Golf Platform';">
+        <div class="project-overlay"><p>View Details</p></div>
+      </div>
+
+      <div class="project-body">
+        <h3>Golf Charity Platform</h3>
+        <p>Subscription-based golf andcharity web app with Stripe payments (monthly/yearly plans), score tracking, monthly prize draws, charity fundraising, and a full admin dashboard.</p>
+
+        <div class="tech-stack">
+          <span>React</span><span>Node.js</span><span>MongoDB</span><span>Stripe</span><span>JWT</span>
+        </div>
+
+        <div class="card-actions">
+          <a href="https://github.com/Visheshjais/golf-platform" target="_blank" rel="noopener noreferrer"
+             onclick="event.stopPropagation()" class="card-btn card-btn-github">
+            <i class="fab fa-github"></i> GitHub
+          </a>
+          <a href="https://golfplatform-frontend.vercel.app/" target="_blank" rel="noopener noreferrer"
+             onclick="event.stopPropagation()" class="card-btn card-btn-demo">
+            <i class="fas fa-external-link-alt"></i> Live Demo
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== PROJECT 4: Unmasking Illusion ===== -->
     <div class="project-card" data-tags="python" onclick="openProject('unmasking')">
+
       <div class="project-img-wrap">
         <img src="images/Unmasking 1.png" loading="lazy" class="project-img" alt="Unmasking Illusion">
         <div class="project-overlay"><p>View Details</p></div>
       </div>
+
       <div class="project-body">
         <h3>Unmasking Illusion</h3>
-        <p>Deepfake detection system using machine learning to detect manipulated faces and videos.</p>
+        <p>Deepfake detection system using PyTorch deep learning to classify manipulated faces and videos with a web interface for real-time predictions.</p>
+
         <div class="tech-stack">
           <span>Python</span><span>PyTorch</span><span>JavaScript</span>
         </div>
+
         <div class="card-actions">
-          <a href="https://github.com/Visheshjais" target="_blank"
+          <a href="https://github.com/Visheshjais/Unmasking-Illusion-deepfake-detection-web-app" target="_blank" rel="noopener noreferrer"
              onclick="event.stopPropagation()" class="card-btn card-btn-github">
             <i class="fab fa-github"></i> GitHub
           </a>
-          <a href="#" target="_blank"
-             onclick="event.stopPropagation()" class="card-btn card-btn-demo">
-            <i class="fas fa-external-link-alt"></i> Live Demo
-          </a>
+          <!-- No live demo available — remove button to avoid dead link -->
+          <span class="card-btn card-btn-demo" style="opacity:0.45; cursor:not-allowed; pointer-events:none;">
+            <i class="fas fa-clock"></i> Demo Soon
+          </span>
         </div>
       </div>
     </div>
 
-    <!-- ===== PROJECT 3: Lingua AI-All-in-One Translation ===== -->
+    <!-- ===== PROJECT 5: Lingua AI Translation ===== -->
     <div class="project-card" data-tags="node" onclick="openProject('translation')">
+
       <div class="project-img-wrap">
         <img src="images/Lingua AI-All-in-One Translation 1.png" loading="lazy" class="project-img" alt="Lingua AI-All-in-One Translation">
         <div class="project-overlay"><p>View Details</p></div>
       </div>
+
       <div class="project-body">
-        <h3>Lingua AI-All-in-One Translation</h3>
-        <p>Multilingual translation platform supporting 50+ languages with multiple translation methods.</p>
+        <h3>Lingua AI — All-in-One Translation</h3>
+        <p>Multilingual translation platform supporting 50+ languages with multiple translation methods and a clean, accessible UI.</p>
+
         <div class="tech-stack">
           <span>Node.js</span><span>JavaScript</span><span>HTML</span>
         </div>
+
         <div class="card-actions">
-          <a href="https://github.com/Visheshjais" target="_blank"
+          <a href="https://github.com/Visheshjais/LinguaAI" target="_blank" rel="noopener noreferrer"
              onclick="event.stopPropagation()" class="card-btn card-btn-github">
             <i class="fab fa-github"></i> GitHub
           </a>
-          <a href="https://lingua-ai-nu.vercel.app/" target="_blank"
+          <a href="https://lingua-ai-nu.vercel.app/" target="_blank" rel="noopener noreferrer"
              onclick="event.stopPropagation()" class="card-btn card-btn-demo">
             <i class="fas fa-external-link-alt"></i> Live Demo
           </a>
@@ -739,6 +800,7 @@
   </div>
 
 </section>
+
 
 
 <!-- ================= CERTIFICATIONS SECTION ================= -->

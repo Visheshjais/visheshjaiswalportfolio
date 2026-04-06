@@ -526,30 +526,59 @@ fetch("https://api.github.com/users/Visheshjais/repos?sort=updated")
 const projectData = {
   groovix: {
     title      : "Groovix Music Player",
-    description: "A Spotify-inspired music streaming web application with a modern interface and smooth playback features. Users can browse songs and control music with interactive UI components built on the MERN stack.",
-    tech       : ["React","Node.js","MongoDB","Express"],
-    images     : ["images/groovix 1.png","images/groovix 2.png","images/groovix 3.png"],
-    videoSrc   : "videos/groovix-demo.mp4",
-    github     : "https://github.com/Visheshjais",
-    demo       : "#"
+    description: "A Spotify-inspired music streaming web app built on the MERN stack. Features JWT authentication, playlist management, audio streaming, and a fully interactive player UI with smooth playback controls.",
+    tech       : ["React", "Node.js", "MongoDB", "Express"],
+    images     : ["images/groovix 1.png", "images/groovix 2.png", "images/groovix 3.png"],
+    videoSrc   : "videos/groovix-demo.mp4",             // ← demo video shown in modal Video tab
+    github     : "https://github.com/Visheshjais/Groovix-MuiscPlayer",
+    demo       : "https://groovix-frontend.vercel.app/" // ← live site link
   },
+
+  jobhunt: {
+    title      : "JobHunt — Full Stack Job Portal",
+    description: "A full-stack job portal where freshers can browse and apply to jobs while recruiters can post listings, manage company profiles, and accept or reject applicants. Features Google OAuth 2.0 login, Cloudinary resume & photo uploads, Redux Toolkit state management, JWT-cookie auth, and a responsive dark-gradient UI.",
+    tech       : ["React", "Node.js", "Express", "MongoDB", "Redux Toolkit", "Tailwind CSS", "Google OAuth", "Cloudinary", "JWT"],
+    images     : ["images/jobhunt 1.png", "images/jobhunt 2.png", "images/jobhunt 3.png","images/jobhunt 4.png"],   // ← add more screenshots as you capture them
+    videoSrc   : "",                          // ← add demo video path here when ready
+    github     : "https://github.com/Visheshjais/JobHunt",
+    demo       : "https://job-hunt-frontend-nine.vercel.app/" // ← live site link
+  },
+
+  golf: {
+    title      : "Golf Charity Platform",
+    description: "A subscription-based golf & charity web app with Stripe-powered monthly/yearly plans, golf score tracking, monthly prize draws with animated ball reveals, charity fundraising with independent donations, a winner verification flow, and a full admin dashboard for managing users, draws, charities, and payouts.",
+    tech       : ["React", "Vite", "Node.js", "Express", "MongoDB", "Stripe", "JWT", "Nodemailer"],
+    images     : ["images/golf 1.png", "images/golf 2.png", "images/golf 3.png", "images/golf 4.png", "images/golf 5.png"],      // ← add more screenshots as you capture them
+    videoSrc   : "",                          // ← add demo video path here when ready
+    github     : "https://github.com/Visheshjais/golf-platform",
+    demo       : "https://golfplatform-frontend.vercel.app/" // ← live site link
+  },
+
   unmasking: {
     title      : "Unmasking Illusion",
-    description: "A deepfake detection system that analyzes manipulated faces in videos and images using machine learning models built with PyTorch.",
-    tech       : ["Python","PyTorch","JavaScript","Flask"],
-    images     : ["images/Unmasking 1.png","images/Unmasking 2.png","images/Unmasking 3.png"],
-    videoSrc   : "",
-    github     : "https://github.com/Visheshjais",
-    demo       : "#"
+    description: "A deepfake detection system that uses PyTorch deep learning models to classify manipulated faces in images and videos, with a web interface for real-time predictions.",
+    tech       : ["Python", "PyTorch", "JavaScript", "Flask"],
+    images     : ["images/Unmasking 1.png", "images/Unmasking 2.png", "images/Unmasking 3.png"],
+    videoSrc   : "",  // ← add demo video path here when ready
+    github     : "https://github.com/Visheshjais/Unmasking-Illusion-deepfake-detection-web-app",
+    demo       : ""   // ← no live deployment yet, modal will show "Demo coming soon"
   },
+
   translation: {
-    title      : "Lingua AI-All-in-One Translation",
-    description: "A multilingual translation platform supporting 50+ languages with a responsive interface and multiple translation methods including text, document, and speech translation.",
-    tech       : ["Node.js","JavaScript","HTML","CSS"],
-    images     : ["images/Lingua AI-All-in-One Translation 1.png","images/Lingua AI-All-in-One Translation 2.png","images/Lingua AI-All-in-One Translation 3.png","images/Lingua AI-All-in-One Translation 4.png","images/Lingua AI-All-in-One Translation 5.png","images/Lingua AI-All-in-One Translation 6.png"],
-    videoSrc   : "",
-    github     : "https://github.com/Visheshjais",
-    demo       : "#"
+    title      : "Lingua AI — All-in-One Translation",
+    description: "A multilingual translation platform supporting 50+ languages with a clean, responsive interface and multiple translation methods including text, document, and speech translation.",
+    tech       : ["Node.js", "JavaScript", "HTML", "CSS"],
+    images     : [
+      "images/Lingua AI-All-in-One Translation 1.png",
+      "images/Lingua AI-All-in-One Translation 2.png",
+      "images/Lingua AI-All-in-One Translation 3.png",
+      "images/Lingua AI-All-in-One Translation 4.png",
+      "images/Lingua AI-All-in-One Translation 5.png",
+      "images/Lingua AI-All-in-One Translation 6.png"
+    ],
+    videoSrc   : "",                              // ← add demo video path here when ready
+    github     : "https://github.com/Visheshjais/LinguaAI",
+    demo       : "https://lingua-ai-nu.vercel.app/" // ← live site link
   }
 };
 
