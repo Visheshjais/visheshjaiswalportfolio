@@ -1,873 +1,1331 @@
-/* =============================================================
-   PORTFOLIO — script.js  v4
-   Sections:
-     1.  Preloader
-     2.  DOM Cache
-     3.  EmailJS Init
-     4.  Cursor Glow
-     5.  Hamburger Menu
-     6.  Theme Toggle (with localStorage memory)
-     7.  Scroll Handler (active link, progress bar, shrink,
-                         reveal, back-to-top, whatsapp btn)
-     8.  Typing Effect
-     9.  Scroll Reveal (initial call)
-    10.  Skill Ring Animation
-    11.  Stat Counter Animation
-    12.  Project Filter
-    13.  Particle Background
-    14.  GitHub Repos
-    15.  Project Data & Modal
-    16.  Contact Form (EmailJS)
-    17.  Copy Email Button
-    18.  Back to Top
-    19.  Sound Effects
-   ============================================================= */
+/* ══════════════════════════════════════════════════════════════════
+   PORTFOLIO — script.js
+   Owner  : Vishesh Jaiswal
+   ──────────────────────────────────────────────────────────────────
+   SECTIONS IN THIS FILE:
+   §1    Preloader          — progress bar 0→88 + fade on window.load
+                              (0→100 counter removed for cleaner look)
+   §2    DOM Cache          — getElementById calls cached once at top
+   §3    EmailJS Init       — initialise SDK early (prevents send delay)
+   §4    Custom CSS Cursor  — dot snaps, ring lerps at 0.11 factor
+   §5    Hamburger Nav      — slide-in mobile menu + overlay backdrop
+   §6    Theme Toggle       — dark/light mode, saved to localStorage
+   §7    Scroll Handler     — RAF-throttled: navbar shrink, scroll bar,
+                              active nav link, show/hide FABs
+   §8    Typing Effect      — 4 roles typed/erased in loop
+   §9    Scroll Reveal      — IntersectionObserver fade-in for sections
+   §10   Skill Bar Anim     — bars animate to data-w% on scroll reveal
+   §11   Stat Counter       — countUp() easeOutCubic RAF loop
+   §12   Project Filter     — filter buttons show/hide project cards
+   §13   Space Canvas       — stars, nebula, particles, shooting stars,
+                              constellations, pulsing rings (paused on
+                              hidden tab, resized debounced 300ms)
+   §14   3D Card Tilt       — mousemove perspective tilt on .tilt-card
+   §15   Magnetic Buttons   — cursor-attraction on .magnetic elements
+   §16   GitHub Repos       — live fetch + skeleton + repo card inject
+   §17   Project Data       — all 5 projects + modal open/close/slide
+   §17b  Certificate Modal  — openCert/closeCert image lightbox for
+                              3 certs: cpp, dsa, infosys
+   §18   Contact Form       — EmailJS send + success/error feedback
+   §18b  Quick-Desc Toggle  — expandable accordion on project cards
+   §19   Copy Email         — clipboard copy + toast notification
+   §20   Back to Top        — smooth scroll to #hero
+   §21   Button Ripple      — water-ripple effect on .btn click
+   §22   Cursor Hover State — body.c-hover on interactive elements
+   ══════════════════════════════════════════════════════════════════ */
 
 
-/* ================= 1. PRELOADER ================= */
-/* Waits for the full page (all images, fonts etc.) to load,
-   then fades out the preloader by adding .hidden class. */
+/* ─── §1  CINEMATIC INTRO / PRELOADER ───────────────────────── */
+/*
+   Drives the full cinematic opening animation:
 
-window.addEventListener("load", () => {
-  const preloader = document.getElementById("preloader");
-  /* Small delay so the spinning animation is actually seen */
-  setTimeout(() => {
-    preloader.classList.add("hidden");
-  }, 700);
-});
+   PHASE 1 — Loading (0 → 88% progress bar):
+     • Photo scales from 2.4× → 1.8× with a smooth CSS transition
+     • Letter-by-letter name animation runs via CSS (staggered delays)
+     • Progress bar ticks up quickly from 0 → 88
 
+   PHASE 2 — On window.load (assets done):
+     • Bar jumps to 100%
+     • Short pause (300ms) then .reveal is added to #preloader
+     • CSS .reveal triggers:
+         - Photo zooms from 1.8× → 0.5× and fades (scale + opacity)
+         - cin-stage (text/ring) fades out
+         - cin-top curtain slides UP off screen
+         - cin-bot curtain slides DOWN off screen
+     • 900ms later: .gone class removes the overlay from DOM flow
+     • Hero content staggered-animates in after overlay is gone
+*/
+(function initCinematicIntro() {
+  const preloader = document.getElementById('preloader');
+  const bar       = document.getElementById('preBar');
+  const cinPhoto  = document.getElementById('cinPhoto');
+  let   current   = 0;
+  let   loaded    = false;
 
-/* ================= 2. DOM CACHE ================= */
-/* Every DOM lookup done once at startup and stored in constants.
-   Avoids repeated getElementById calls inside scroll/event handlers. */
-
-const hamburger    = document.getElementById("hamburger");
-const navMenu      = document.getElementById("navLinks");
-const themeBtn     = document.getElementById("themeToggle");
-const scrollBar    = document.getElementById("scrollBar");
-const navbar       = document.getElementById("navbar");
-const backToTop    = document.getElementById("backToTop");
-const whatsappBtn  = document.getElementById("whatsappBtn");
-const sections     = document.querySelectorAll("section");
-const navLinks     = document.querySelectorAll(".nav-links a");
-const typingEl     = document.querySelector(".typing");
-const projectModal = document.getElementById("projectModal");
-const sliderImage  = document.getElementById("sliderImage");
-const sliderDots   = document.getElementById("sliderDots");
-const modalVideo   = document.getElementById("modalVideo");
-const modalVideoSrc= document.getElementById("modalVideoSrc");
-const noVideoMsg   = document.getElementById("noVideoMsg");
-const panelImages  = document.getElementById("panelImages");
-const panelVideo   = document.getElementById("panelVideo");
-const tabImages    = document.getElementById("tabImages");
-const tabVideo     = document.getElementById("tabVideo");
-const contactForm  = document.getElementById("contactForm");
-const formMessage  = document.getElementById("formMessage");
-
-const copyEmailBtn = document.getElementById("copyEmailBtn");
-const copyToast    = document.getElementById("copyToast");
-
-
-/* ================= 3. EMAILJS INIT ================= */
-/* Initialized immediately on page load — NOT inside the submit handler.
-   This eliminates the 15-20 second delay on first form submit. */
-
-emailjs.init("mj63OiHBpYlItbYc0"); /* ← replace with your EmailJS Public Key */
-
-
-/* ================= 4. BLACK HOLE CURSOR ================= */
-
-const bhCanvas = document.getElementById("bhCanvas");
-const bhCtx = bhCanvas.getContext("2d");
-bhCanvas.width = innerWidth;
-bhCanvas.height = innerHeight;
-window.addEventListener("resize", () => {
-  bhCanvas.width = innerWidth;
-  bhCanvas.height = innerHeight;
-});
-
-let bhMx = innerWidth/2, bhMy = innerHeight/2;
-let bhBx = bhMx, bhBy = bhMy;
-let bhVel = 0, bhHovering = false, bhT = 0;
-
-// field particles
-const bhPts = Array.from({length: 80}, () => ({
-  x: Math.random() * innerWidth,
-  y: Math.random() * innerHeight,
-  vx: (Math.random() - .5) * .4,
-  vy: (Math.random() - .5) * .4,
-  r: Math.random() * 2 + .5,
-  hue: 180 + Math.random() * 80
-}));
-
-document.addEventListener("mousemove", e => {
-  const dx = e.clientX - bhMx, dy = e.clientY - bhMy;
-  bhVel = Math.min(Math.sqrt(dx*dx + dy*dy), 30) / 30;
-  bhMx = e.clientX; bhMy = e.clientY;
-});
-document.addEventListener("mouseleave", () => { bhCanvas.style.opacity = "0"; });
-document.addEventListener("mouseenter", () => { bhCanvas.style.opacity = "1"; });
-
-document.querySelectorAll("a, button, input, textarea, .project-card, .filter-btn, .copy-email").forEach(el => {
-  el.style.cursor = "none";
-  el.addEventListener("mouseenter", () => bhHovering = true);
-  el.addEventListener("mouseleave", () => bhHovering = false);
-});
-
-function animateBlackHole() {
-  bhT += 0.016;
-  bhCtx.clearRect(0, 0, bhCanvas.width, bhCanvas.height);
-  bhBx += (bhMx - bhBx) * .09;
-  bhBy += (bhMy - bhBy) * .09;
-
-  const pullR = bhHovering ? 160 : 100;
-
-  bhPts.forEach(p => {
-    const dx = bhBx - p.x, dy = bhBy - p.y;
-    const d = Math.sqrt(dx*dx + dy*dy);
-    if (d < pullR) {
-      const force = (1 - d/pullR) * (bhHovering ? .04 : .018);
-      p.vx += dx * force; p.vy += dy * force;
+  /* ── Phase 1: tick bar from 0 → 88 quickly ── */
+  function tick() {
+    if (current < 88 && !loaded) {
+      current += Math.random() * 3.5 + 1;
+      if (current > 88) current = 88;
+      if (bar) bar.style.width = current + '%';
+      setTimeout(tick, 30);
     }
-    p.vx *= .96; p.vy *= .96;
-    p.x += p.vx; p.y += p.vy;
-    if (p.x < 0) p.x = innerWidth;
-    if (p.x > innerWidth) p.x = 0;
-    if (p.y < 0) p.y = innerHeight;
-    if (p.y > innerHeight) p.y = 0;
-
-    const d2 = Math.hypot(bhBx - p.x, bhBy - p.y);
-    const bright = Math.max(0, 1 - d2 / (pullR * 1.2));
-    bhCtx.beginPath();
-    bhCtx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-    bhCtx.fillStyle = `hsla(${p.hue},80%,70%,${.2 + bright*.7})`;
-    bhCtx.fill();
-
-    if (d2 < 80) {
-      bhCtx.beginPath(); bhCtx.moveTo(p.x, p.y); bhCtx.lineTo(bhBx, bhBy);
-      bhCtx.strokeStyle = `hsla(${p.hue},80%,60%,${(1-d2/80)*.25})`;
-      bhCtx.lineWidth = .6; bhCtx.stroke();
-    }
-  });
-
-  // event horizon rings
-  for (let r = 0; r < 3; r++) {
-    const rad = (bhHovering ? 24 : 14) + r*10 + Math.sin(bhT*3 + r)*3;
-    bhCtx.beginPath(); bhCtx.arc(bhBx, bhBy, rad, 0, Math.PI*2);
-    bhCtx.strokeStyle = `rgba(130,80,255,${.5 - r*.12})`;
-    bhCtx.lineWidth = 1.5 - r*.3; bhCtx.stroke();
   }
+  tick();
 
-  // dark core
-  bhCtx.beginPath(); bhCtx.arc(bhBx, bhBy, bhHovering ? 12 : 7, 0, Math.PI*2);
-  bhCtx.fillStyle = "#38bdf8"; bhCtx.fill();
-  bhCtx.beginPath(); bhCtx.arc(bhBx, bhBy, bhHovering ? 12 : 7, 0, Math.PI*2);
-  bhCtx.strokeStyle = "rgba(160,100,255,0.8)"; bhCtx.lineWidth = 1.5; bhCtx.stroke();
+  /* ── Phase 2: on window.load → trigger cinematic reveal ── */
+  window.addEventListener('load', () => {
+    loaded = true;
+    if (bar) bar.style.width = '100%';
 
-  requestAnimationFrame(animateBlackHole);
+    /* Hold at 100% for 300ms so user sees completion, then reveal */
+    setTimeout(() => {
+      if (preloader) preloader.classList.add('reveal');
+
+      /* After curtains finish sliding (900ms), fully remove overlay */
+      setTimeout(() => {
+        if (preloader) preloader.classList.add('gone');
+        document.body.classList.add('reveal-done'); /* ← triggers #cinemaOverlay to slide away */
+
+        /* Stagger hero content in once the stage is clear */
+        document.querySelectorAll('.hero-left > *').forEach((el, i) => {
+          el.style.opacity    = '0';
+          el.style.transform  = 'translateY(28px)';
+          el.style.transition = `opacity .6s ease ${0.15 + i * 0.1}s,
+                                 transform .6s ease ${0.15 + i * 0.1}s`;
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            el.style.opacity   = '1';
+            el.style.transform = 'translateY(0)';
+          }));
+        });
+      }, 900);
+    }, 300);
+  });
+})();
+
+
+/* ─── §2  DOM CACHE ───────────────────────────────────────────── */
+/*
+   Cache all frequently-accessed elements once so we never call
+   getElementById repeatedly inside loops or scroll handlers.
+*/
+const $ = id => document.getElementById(id);
+
+const hamburger     = $('hamburger');
+const navMenu       = $('navLinks');
+const navOverlay    = $('navOverlay');
+const themeBtn      = $('themeToggle');
+const scrollBar     = $('scrollBar');
+const navbar        = $('navbar');
+const backToTop     = $('backToTop');
+const whatsappBtn   = $('whatsappBtn');
+const allSections   = document.querySelectorAll('section');
+const navLinks      = document.querySelectorAll('.nav-links a');
+const typingEl      = $('typingEl');
+const projectModal  = $('projectModal');
+const sliderImage   = $('sliderImage');
+const sliderDots    = $('sliderDots');
+const modalVideo    = $('modalVideo');
+const modalVideoSrc = $('modalVideoSrc');
+const noVideoMsg    = $('noVideoMsg');
+const panelImages   = $('panelImages');
+const panelVideo    = $('panelVideo');
+const tabImages     = $('tabImages');
+const tabVideo      = $('tabVideo');
+const contactForm   = $('contactForm');
+const formMessage   = $('formMessage');
+const copyEmailBtn  = $('copyEmailBtn');
+const copyToast     = $('copyToast');
+const cursorDot     = $('cursorDot');
+const cursorRing    = $('cursorRing');
+
+
+/* ─── §3  EMAILJS INIT ────────────────────────────────────────── */
+/*
+   Initialise in <head> / early in JS (EmailJS SDK is loaded in <head>).
+   This prevents the 15–20s first-send delay that occurs when the
+   SDK is initialised lazily on first form submit.
+   Replace 'mj63OiHBpYlItbYc0' with your own EmailJS Public Key.
+*/
+if (typeof emailjs !== 'undefined') {
+  emailjs.init('mj63OiHBpYlItbYc0');
 }
-animateBlackHole();
 
 
-/* ================= 5. HAMBURGER MENU ================= */
-/* Mobile only. Toggling "open" class slides the nav in from right
-   and shows a dark overlay backdrop behind it.
-   Clicking the overlay or any nav link closes the menu. */
+/* ─── §4  CUSTOM CSS CURSOR ───────────────────────────────────── */
+/*
+   Two-element cursor system (replaces old heavy canvas cursor):
+   • #cursorDot  — 8px dot, snaps to mouse instantly via direct style
+   • #cursorRing — 32px ring, lerps toward dot for elastic lag feel
+   Lerp factor 0.11 = smooth but not too slow.
+   Hidden on touch devices via CSS `@media (pointer: coarse)`.
+*/
+let mx = 0, my = 0;  /* mouse position */
+let rx = 0, ry = 0;  /* ring position (lerped) */
 
-const navOverlay = document.getElementById("navOverlay");
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  /* Dot snaps immediately — no lag */
+  if (cursorDot) {
+    cursorDot.style.left = mx + 'px';
+    cursorDot.style.top  = my + 'px';
+  }
+});
 
-/* Helper — opens or closes the mobile nav */
-function toggleNav(forceClose){
-  const isOpen = navMenu.classList.contains("open");
-  if(forceClose || isOpen){
-    /* Close */
-    hamburger.classList.remove("open");
-    navMenu.classList.remove("open");
-    if(navOverlay) navOverlay.classList.remove("open");
-    document.body.style.overflow = ""; /* restore page scroll */
-  } else {
-    /* Open */
-    hamburger.classList.add("open");
-    navMenu.classList.add("open");
-    if(navOverlay) navOverlay.classList.add("open");
-    document.body.style.overflow = "hidden"; /* lock page scroll */
+/* Ring follows with smooth interpolation via RAF loop */
+(function ringFollow() {
+  rx += (mx - rx) * 0.11;
+  ry += (my - ry) * 0.11;
+  if (cursorRing) {
+    cursorRing.style.left = rx + 'px';
+    cursorRing.style.top  = ry + 'px';
+  }
+  requestAnimationFrame(ringFollow);
+})();
+
+/* Hide cursors when mouse leaves the window */
+document.addEventListener('mouseleave', () => {
+  if (cursorDot)  cursorDot.style.opacity  = '0';
+  if (cursorRing) cursorRing.style.opacity = '0';
+});
+document.addEventListener('mouseenter', () => {
+  if (cursorDot)  cursorDot.style.opacity  = '1';
+  if (cursorRing) cursorRing.style.opacity = '.55';
+});
+
+
+/* ─── §22  CURSOR HOVER STATE ─────────────────────────────────── */
+/*
+   Adds body.c-hover while the cursor is over an interactive element.
+   CSS uses this to enlarge the ring and change its colour.
+   Listed here (before §5) because it must run after DOM cache.
+*/
+const hoverTargets = 'a, button, .proj-card, .pf-btn, .tg-item, .clink, .cert-card, .ac';
+document.querySelectorAll(hoverTargets).forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('c-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('c-hover'));
+});
+
+
+/* ─── §5  HAMBURGER MOBILE NAV ────────────────────────────────── */
+/*
+   On mobile: clicking the hamburger slides in the nav menu from the right.
+   The navOverlay (semi-dark backdrop) clicking closes it.
+   Any nav link click also closes the menu.
+   body overflow is locked while menu is open to prevent scroll.
+*/
+function closeNav() {
+  if (hamburger) hamburger.classList.remove('open');
+  if (navMenu)   navMenu.classList.remove('open');
+  if (navOverlay) navOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+if (hamburger) hamburger.addEventListener('click', () => {
+  const open = hamburger.classList.toggle('open');
+  if (navMenu)    navMenu.classList.toggle('open', open);
+  if (navOverlay) navOverlay.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+
+if (navOverlay) navOverlay.addEventListener('click', closeNav);
+navLinks.forEach(l => l.addEventListener('click', closeNav));
+
+
+/* ─── §6  THEME TOGGLE ────────────────────────────────────────── */
+/*
+   Persists dark/light preference in localStorage.
+   On page load: reads saved preference and applies immediately.
+   Toggle: flips .light-mode on <body>, updates icon, saves to storage.
+   ☀️ icon shown in dark mode | 🌙 icon shown in light mode.
+*/
+if (localStorage.getItem('theme') === 'light') {
+  document.body.classList.add('light-mode');
+  if (themeBtn) themeBtn.innerHTML = '<i class="fas fa-moon"></i>';
+}
+
+if (themeBtn) themeBtn.addEventListener('click', () => {
+  const light = document.body.classList.toggle('light-mode');
+  themeBtn.innerHTML = light ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+  localStorage.setItem('theme', light ? 'light' : 'dark');
+});
+
+
+/* ─── §7  SCROLL HANDLER ──────────────────────────────────────── */
+/*
+   All scroll-triggered updates run inside a single RAF-throttled
+   function (doScroll). This prevents multiple layout reads per
+   frame and keeps 60fps scrolling smooth.
+   { passive: true } tells the browser we won't call preventDefault(),
+   so it doesn't have to wait for us before scrolling.
+*/
+let ticking = false;
+
+function onScroll() {
+  if (!ticking) {
+    requestAnimationFrame(doScroll);
+    ticking = true;
   }
 }
 
-hamburger.addEventListener("click", () => toggleNav());
+function doScroll() {
+  const y    = window.scrollY;
+  const maxY = document.documentElement.scrollHeight - window.innerHeight;
+  const prog = (y / maxY) * 100;
 
-/* Clicking the dark backdrop closes the nav */
-if(navOverlay){
-  navOverlay.addEventListener("click", () => toggleNav(true));
+  /* Scroll progress bar width */
+  if (scrollBar) scrollBar.style.width = prog + '%';
+
+  /* Navbar shrink: add .scrolled class after 60px */
+  if (navbar) navbar.classList.toggle('scrolled', y > 60);
+
+  /* Show floating action buttons after 280px */
+  const show = y > 280;
+  if (backToTop)   backToTop.classList.toggle('show', show);
+  if (whatsappBtn) whatsappBtn.classList.toggle('show', show);
+
+  /* Highlight the active section's nav link */
+  let current = '';
+  allSections.forEach(s => {
+    if (y >= s.offsetTop - 140) current = s.id;
+  });
+  navLinks.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+
+  ticking = false;
 }
 
-/* Any nav link click closes the menu */
-navMenu.querySelectorAll("a").forEach(link => {
-  link.addEventListener("click", () => toggleNav(true));
-});
+window.addEventListener('scroll', onScroll, { passive: true });
 
 
-/* ================= 6. THEME TOGGLE ================= */
-/* Toggles light-mode class on <body> and swaps the button icon.
-   Saves the preference to localStorage so it persists on reload. */
-
-/* Restore saved theme on page load */
-if(localStorage.getItem("theme") === "light"){
-  document.body.classList.add("light-mode");
-  themeBtn.textContent = "🌙";
-}
-
-themeBtn.addEventListener("click", () => {
-  document.body.classList.toggle("light-mode");
-  const isLight = document.body.classList.contains("light-mode");
-  themeBtn.textContent = isLight ? "🌙" : "☀️";
-  /* Persist the preference across page reloads */
-  localStorage.setItem("theme", isLight ? "light" : "dark");
-});
-
-
-/* ================= 7. SCROLL HANDLER ================= */
-/* Single merged scroll listener — one listener is cheaper than many.
-   Handles: active nav, progress bar, navbar shrink,
-            reveal animations, floating button visibility. */
-
-window.addEventListener("scroll", () => {
-
-  const scrollTop = document.documentElement.scrollTop;
-  const height    = document.documentElement.scrollHeight
-                  - document.documentElement.clientHeight;
-
-  /* --- Active nav link highlight ---
-       Checks which section is currently in view and marks its link. */
-  let current = "";
-  sections.forEach(section => {
-    if(pageYOffset >= section.offsetTop - 160){
-      current = section.getAttribute("id");
-    }
-  });
-  navLinks.forEach(link => {
-    link.classList.remove("active");
-    if(link.getAttribute("href").includes(current)){
-      link.classList.add("active");
-    }
-  });
-
-  /* --- Gradient scroll progress bar ---
-       Width percentage = how far user has scrolled. */
-  scrollBar.style.width = ((scrollTop / height) * 100) + "%";
-
-  /* --- Scroll reveal ---
-       Adds .active to .reveal elements when they enter the viewport. */
-  document.querySelectorAll(".reveal").forEach(el => {
-    if(el.getBoundingClientRect().top < window.innerHeight - 80){
-      el.classList.add("active");
-    }
-  });
-
-  /* --- Navbar scroll-shrink ---
-       After 80px scroll, .scrolled reduces navbar padding. */
-  navbar.classList.toggle("scrolled", scrollTop > 80);
-
-  /* --- Floating buttons visibility ---
-       Back-to-top and WhatsApp both show after 300px scroll. */
-  const showFloating = scrollTop > 300;
-  backToTop.classList.toggle("show", showFloating);
-  if(whatsappBtn) whatsappBtn.classList.toggle("show", showFloating);
-
-  /* --- Skill ring animation trigger --- */
-  animateRings();
-
-});
-
-
-/* ================= 8. TYPING EFFECT ================= */
-/* Cycles through developer role phrases, typing one character
-   at a time. Pauses 1.2s at end of each phrase before next. */
-
-const phrases = [
-  "I am a Frontend Developer",
-  "I am a MERN Stack Developer",
-  "I am a Web Designer",
-  "I am a Full Stack Developer"
+/* ─── §8  TYPING EFFECT ───────────────────────────────────────── */
+/*
+   Typewriter that cycles through exactly 4 roles:
+   type → hold 1700ms at full word → erase → next role → repeat.
+   Uses setTimeout (not setInterval) so timing stays accurate
+   across tab switches and throttled timers.
+*/
+const ROLES = [
+  'Frontend Developer',
+  'MERN Stack Developer',
+  'UI/UX Enthusiast',
+  'Full Stack Developer',
 ];
 
-let phraseIndex = 0;
-let charIndex   = 0;
+let roleIdx  = 0;
+let charIdx  = 0;
+let erasing  = false;
+let holdType = false;
 
-(function type(){
-  if(phraseIndex === phrases.length) phraseIndex = 0;
-  const current = phrases[phraseIndex];
-  typingEl.textContent = current.slice(0, ++charIndex);
-  if(charIndex === current.length){
-    phraseIndex++;
-    charIndex = 0;
-    setTimeout(type, 1200); /* pause at end of phrase */
-  } else {
-    setTimeout(type, 90);   /* type next character at 90ms interval */
+function runTyping() {
+  if (!typingEl) return;
+
+  /* Hold pause at end of word */
+  if (holdType) {
+    holdType = false;
+    setTimeout(runTyping, 1700);
+    return;
   }
-})();
 
+  const word = ROLES[roleIdx];
 
-/* ================= 9. SCROLL REVEAL (initial call) ================= */
-/* Called once on load so elements already visible on the page
-   (above the fold) animate in without requiring any scroll. */
-
-(function revealOnLoad(){
-  document.querySelectorAll(".reveal").forEach(el => {
-    if(el.getBoundingClientRect().top < window.innerHeight - 80){
-      el.classList.add("active");
+  if (!erasing) {
+    /* Type one character */
+    charIdx++;
+    typingEl.textContent = word.slice(0, charIdx);
+    if (charIdx === word.length) { erasing = true; holdType = true; }
+    setTimeout(runTyping, 75);
+  } else {
+    /* Erase one character */
+    charIdx--;
+    typingEl.textContent = word.slice(0, charIdx);
+    if (charIdx === 0) {
+      erasing = false;
+      roleIdx = (roleIdx + 1) % ROLES.length;
     }
+    setTimeout(runTyping, 38);
+  }
+}
+runTyping();
+
+
+/* ─── §9  SCROLL REVEAL + STAGGER ────────────────────────────── */
+/*
+   IntersectionObserver fires only when elements enter the viewport.
+   revObs  — observes .reveal-section (adds .visible to trigger CSS)
+   stagObs — observes .reveal-child (staggered delay per sibling index)
+   cardObs — observes .proj-card, .tl-item, .cert-card individually
+             so each animates in as it enters the viewport
+   All observers unobserve after first trigger (one-time animation).
+*/
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    revObs.unobserve(e.target);
   });
-})();
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
 
+document.querySelectorAll('.reveal-section').forEach(el => revObs.observe(el));
 
-/* ================= 10. SKILL RING ANIMATION ================= */
-/* Each .ring-fill SVG circle has data-progress (0–100).
-   We calculate stroke-dashoffset to draw the arc.
-   Circumference = 2π × radius = 2π × 32 ≈ 201.06 px */
-
-const CIRC = 2 * Math.PI * 32;
-
-/* Inject a hidden SVG with the gradient definition used by all rings.
-   Must be in the DOM so ring-fill circles can reference #ringGrad. */
-(function injectRingGradient(){
-  const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
-  svg.setAttribute("style","position:absolute;width:0;height:0;overflow:hidden");
-  svg.innerHTML = `
-    <defs>
-      <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%"   stop-color="#38bdf8"/>
-        <stop offset="100%" stop-color="#6c63ff"/>
-      </linearGradient>
-    </defs>`;
-  document.body.prepend(svg);
-})();
-
-/* Tracks rings already animated so we don't re-animate them */
-const animatedRings = new Set();
-
-function animateRings(){
-  document.querySelectorAll(".ring-fill").forEach(circle => {
-    /* Skip if already animated */
-    if(animatedRings.has(circle)) return;
-    /* Only animate when circle enters the viewport */
-    if(circle.getBoundingClientRect().top < window.innerHeight - 40){
-      const progress = parseFloat(circle.dataset.progress) || 0;
-      /* offset = full circumference minus the filled portion */
-      const offset = CIRC - (progress / 100) * CIRC;
-      circle.style.strokeDasharray  = CIRC;
-      circle.style.strokeDashoffset = offset;
-      animatedRings.add(circle); /* mark as done */
+const stagObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const siblings = Array.from(e.target.parentElement.querySelectorAll('.reveal-child'));
+    const i = siblings.indexOf(e.target);
+    /* Only set delay if CSS hasn't already set one via nth-child */
+    if (!e.target.style.transitionDelay) {
+      e.target.style.transitionDelay = (i * 0.1) + 's';
     }
+    e.target.classList.add('visible');
+    stagObs.unobserve(e.target);
   });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal-child').forEach(el => stagObs.observe(el));
+
+/* Individual card observer — proj-card, tl-item, cert-card each enter one by one */
+const cardObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    cardObs.unobserve(e.target);
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+/* Observe each project card, timeline item, cert card */
+document.querySelectorAll('.proj-card, .tl-item, .cert-card').forEach(el => cardObs.observe(el));
+
+
+/* ─── §10  SKILL BAR ANIMATION ────────────────────────────────── */
+/*
+   Watches .panel-bars with IntersectionObserver.
+   When scrolled into view, animates each .sbar-fill to its
+   data-w% width with a staggered delay (i × 90ms).
+*/
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('.sbar-fill').forEach((bar, i) => {
+      const w = bar.getAttribute('data-w') || 0;
+      setTimeout(() => { bar.style.width = w + '%'; }, i * 90);
+    });
+    barObs.unobserve(e.target);
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.panel-bars').forEach(el => barObs.observe(el));
+
+
+/* ─── §11  STAT COUNTER ANIMATION ─────────────────────────────── */
+/*
+   countUp: animates a number element from 0 to data-target
+   using easeOutCubic over 1800ms via requestAnimationFrame.
+   IntersectionObserver triggers it only once when .hero-stats
+   enters the viewport (threshold 0.5 = half visible).
+*/
+function countUp(el) {
+  const target = parseInt(el.getAttribute('data-target'), 10);
+  const dur    = 1800;
+  const start  = performance.now();
+
+  function step(now) {
+    const t = Math.min((now - start) / dur, 1);
+    /* easeOutCubic easing: fast start, smooth deceleration */
+    el.textContent = Math.round((1 - Math.pow(1 - t, 3)) * target);
+    if (t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
-/* Call on page load too — for rings already in view */
-animateRings();
-
-
-/* ================= 11. STAT COUNTER ANIMATION ================= */
-/* Counts each .stat-number from 0 up to its data-target value.
-   Duration: ~1.2 seconds total per counter. */
-
-function animateCounters(){
-  document.querySelectorAll(".stat-number").forEach(el => {
-    const target   = parseInt(el.dataset.target, 10);
-    const duration = 1200; /* total animation time in ms */
-    const step     = duration / target; /* ms per increment */
-    let current    = 0;
-    const timer = setInterval(() => {
-      current++;
-      el.textContent = current;
-      if(current >= target) clearInterval(timer); /* stop when done */
-    }, step);
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('.stat-n').forEach(countUp);
+    statObs.unobserve(e.target);
   });
-}
+}, { threshold: 0.5 });
 
-/* Delay slightly so the preloader is gone before counters start */
-setTimeout(animateCounters, 800);
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) statObs.observe(statsEl);
+
+/* Also animate the .sk-num counters in the skills stat strip */
+/* These use the same countUp() function — just a different container */
+const skStatObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    /* sk-num elements use data-target just like stat-n */
+    e.target.querySelectorAll('.sk-num').forEach(el => {
+      const target = parseInt(el.getAttribute('data-target'), 10);
+      const dur = 1600;
+      const start = performance.now();
+      function step(now) {
+        const t = Math.min((now - start) / dur, 1);
+        el.textContent = Math.round((1 - Math.pow(1 - t, 3)) * target);
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+    skStatObs.unobserve(e.target);
+  });
+}, { threshold: 0.4 });
+
+const skStripEl = document.querySelector('.skills-stat-strip');
+if (skStripEl) skStatObs.observe(skStripEl);
 
 
-/* ================= 12. PROJECT FILTER ================= */
-/* Clicking a filter button shows only project cards whose
-   data-tags attribute contains the selected filter keyword. */
+/* ─── §12  PROJECT FILTER ─────────────────────────────────────── */
+/*
+   Filter buttons show/hide project cards based on data-tags.
+   Active filter button gets .active class (for CSS styling).
+   Cards not matching get .hidden class (CSS: display:none / scale:0).
+*/
+document.querySelectorAll('.pf-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
-document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
+    const f = btn.getAttribute('data-filter');
+    document.querySelectorAll('.proj-card').forEach(card => {
+      const tags = card.getAttribute('data-tags') || '';
+      card.classList.toggle('hidden', f !== 'all' && !tags.includes(f));
+    });
+  });
+});
 
-    /* Mark only the clicked button as active */
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
 
-    const filter = btn.dataset.filter; /* "all", "react", "node" etc. */
+/* ─── §13  SPACE CANVAS BACKGROUND ─────────────────────────────── */
+/*
+   Unified canvas rendering all space effects:
 
-    document.querySelectorAll(".project-card").forEach(card => {
-      const tags = card.dataset.tags || "";
-      if(filter === "all" || tags.includes(filter)){
-        /* Show the card with a fade-in animation */
-        card.classList.remove("hidden");
-        card.style.animation = "filterFadeIn 0.4s ease forwards";
-      } else {
-        /* Hide the card */
-        card.classList.add("hidden");
+   Elements rendered each frame:
+   ┌─────────────────────────────────────┐
+   │ 1. Nebula blobs (5 radial gradients)│
+   │ 2. Pulse rings (random intervals)   │
+   │ 3. Constellation edges + nodes      │
+   │ 4. Stars (twinkle via sin wave)     │
+   │ 5. Particles + connection lines     │
+   │ 6. Shooting stars (colorful trails) │
+   └─────────────────────────────────────┘
+
+   Optimisations:
+   ✓ Canvas paused via document.visibilitychange when tab hidden
+   ✓ Resize debounced 300ms (no rebuild spam during window drag)
+   ✓ Particle count auto-halved on mobile (≤768px viewport)
+   ✓ Mouse move for canvas throttled to once per rAF frame
+   ✓ canvas.getContext called once, no repeated calls
+*/
+(function initSpaceCanvas() {
+  const cv  = $('spaceCanvas');
+  if (!cv) return;
+  /* alpha:true needed (transparent bg). willReadFrequently:false = default,
+     which is correct here — we only write to the canvas, never read back. */
+  const ctx = cv.getContext('2d', { alpha: true });
+
+  let W, H;
+  let pmx = 0, pmy = 0;           /* canvas-tracked mouse position */
+  let mouseDirty = false;          /* throttle: update pmx/pmy once per frame */
+  let animPaused = false;          /* true when tab is hidden */
+  let rafId      = null;           /* requestAnimationFrame ID for cancellation */
+  let resizeTimer = null;          /* debounce resize rebuild */
+
+  /* Track mouse but only write to pmx/pmy once per frame (throttle) */
+  document.addEventListener('mousemove', e => {
+    if (!mouseDirty) {
+      requestAnimationFrame(() => {
+        pmx = e.clientX;
+        pmy = e.clientY;
+        mouseDirty = false;
+      });
+      mouseDirty = true;
+    }
+  });
+
+  /* Pause canvas rAF loop when tab is hidden — saves significant CPU */
+  document.addEventListener('visibilitychange', () => {
+    animPaused = document.hidden;
+    if (!animPaused && !rafId) {
+      rafId = requestAnimationFrame(draw); /* resume */
+    }
+  });
+
+  /* Debounced resize: only rebuilds scene 300ms after last resize event */
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 300);
+  });
+
+  function resize() {
+    W = cv.width  = window.innerWidth;
+    H = cv.height = window.innerHeight;
+    buildStars();
+    buildConstellations();
+    buildParts();
+  }
+
+  /* ── Stars — 3 size tiers, random blue/warm hue ── */
+  let stars = [];
+  function buildStars() {
+    /* Density capped at 800 max; scales to viewport size */
+    const count = Math.min(Math.floor((W * H) / 1800), 800);
+    stars = Array.from({ length: count }, () => {
+      const tier = Math.random();
+      return {
+        x:            Math.random() * W,
+        y:            Math.random() * H,
+        r:            tier > .9 ? Math.random() * 1.6 + 1.2
+                    : tier > .7 ? Math.random() * .9  + .6
+                    :             Math.random() * .5  + .15,
+        alpha:        Math.random() * 0.7 + 0.15,
+        twinkleSpd:   Math.random() * 0.025 + 0.004,
+        twinklePhase: Math.random() * Math.PI * 2,
+        /* 85% cool white, 7.5% cool blue, 7.5% warm amber */
+        hue: Math.random() > .85
+          ? (Math.random() > .5 ? '180,200,255' : '255,200,180')
+          : '220,220,255',
+      };
+    });
+  }
+
+  /* ── Nebula blobs (5 large slowly-drifting coloured patches) ── */
+  const NEBULAE = [
+    { x:.12, y:.18, r:.32, hue:'124,92,252',  t:0,   ts:.00035 },
+    { x:.80, y:.50, r:.28, hue:'0,229,200',   t:1.5, ts:.00028 },
+    { x:.42, y:.85, r:.22, hue:'255,100,150', t:3,   ts:.00042 },
+    { x:.70, y:.12, r:.18, hue:'255,180,50',  t:0.8, ts:.00050 },
+    { x:.25, y:.60, r:.20, hue:'80,180,255',  t:2.2, ts:.00038 },
+  ];
+
+  /* ── Constellation clusters (star groups with connecting lines) ── */
+  let constellations = [];
+  function buildConstellations() {
+    constellations = [];
+    const clusterCount = Math.floor(W / 400);
+    for (let c = 0; c < clusterCount; c++) {
+      const cx = Math.random() * W;
+      const cy = Math.random() * H;
+      const nodeCount = Math.floor(Math.random() * 4) + 3;
+      const nodes = Array.from({ length: nodeCount }, () => ({
+        x: cx + (Math.random() - .5) * 180,
+        y: cy + (Math.random() - .5) * 180,
+        r: Math.random() * 1.2 + .5,
+      }));
+      const edges = [];
+      for (let i = 0; i < nodes.length - 1; i++) {
+        edges.push([i, i + 1]);
+        if (i < nodes.length - 2 && Math.random() > .5) edges.push([i, i + 2]);
+      }
+      constellations.push({ nodes, edges });
+    }
+  }
+
+  /* ── Floating particles — halved on mobile for performance ── */
+  /* Mobile (≤768px): 28 particles; desktop: 55 particles */
+  const isMobile   = () => window.innerWidth <= 768;
+  const PART_COUNT = () => isMobile() ? 28 : 55;
+  const CONN_DIST  = 130;
+  let   parts      = [];
+  const PART_COLORS = ['124,92,252', '0,229,200', '180,180,255', '255,120,180'];
+
+  function buildParts() {
+    const count = PART_COUNT();
+    parts = Array.from({ length: count }, () => ({
+      x:  Math.random() * W,
+      y:  Math.random() * H,
+      vx: (Math.random() - .5) * .3,
+      vy: (Math.random() - .5) * .3,
+      r:  Math.random() * 1.8 + .5,
+      ci: Math.floor(Math.random() * PART_COLORS.length),
+    }));
+  }
+
+  /* ── Shooting stars (spawn every 3–7 seconds) ── */
+  let shooters = [];
+  const SHOOTER_COLORS = [
+    'rgba(255,255,255,',  /* white */
+    'rgba(160,120,255,',  /* violet */
+    'rgba(0,229,200,',    /* cyan */
+    'rgba(255,200,80,',   /* gold */
+  ];
+
+  function spawnShooter() {
+    const fromTop = Math.random() > .4;
+    const ci = Math.floor(Math.random() * SHOOTER_COLORS.length);
+    shooters.push({
+      x:     fromTop ? Math.random() * W * .8 : -20,
+      y:     fromTop ? -20 : Math.random() * H * .5,
+      vx:    fromTop ? (Math.random() * 5 + 3.5) : (Math.random() * 6 + 4),
+      vy:    fromTop ? (Math.random() * 3.5 + 2) : (Math.random() * 2 + .8),
+      len:   Math.random() * 130 + 70,
+      alpha: 1,
+      fade:  Math.random() * 0.018 + 0.012,
+      color: SHOOTER_COLORS[ci],
+      width: Math.random() * 1.2 + .8,
+    });
+  }
+
+  /* Recurring shooter spawn (not setInterval so timing drifts less) */
+  function scheduleShooter() {
+    if (!animPaused) spawnShooter();
+    setTimeout(scheduleShooter, Math.random() * 4000 + 3000);
+  }
+  setTimeout(scheduleShooter, 1500);
+
+  /* ── Pulsing deep-space rings ── */
+  let pulseRings = [];
+  function spawnRing() {
+    if (animPaused) return;
+    pulseRings.push({
+      x:     Math.random() * W,
+      y:     Math.random() * H,
+      r:     0,
+      maxR:  Math.random() * 120 + 60,
+      alpha: .18,
+      speed: Math.random() * .6 + .3,
+      hue:   Math.random() > .5 ? '124,92,252' : '0,229,200',
+    });
+  }
+  setInterval(spawnRing, 4500);
+
+  /* ─── MAIN DRAW LOOP ─── */
+  function draw() {
+    /* If tab hidden, stop scheduling new frames */
+    if (animPaused) { rafId = null; return; }
+
+    ctx.clearRect(0, 0, W, H);
+    const isLight = document.body.classList.contains('light-mode');
+    const ba      = isLight ? 0.22 : 1; /* reduce all alpha in light mode */
+
+    /* ── Draw: Nebulae ── */
+    NEBULAE.forEach(n => {
+      n.t += n.ts;
+      const nx = (n.x + Math.sin(n.t) * .06) * W;
+      const ny = (n.y + Math.cos(n.t * .7) * .05) * H;
+      const nr = n.r * Math.min(W, H);
+      const g  = ctx.createRadialGradient(nx, ny, 0, nx, ny, nr);
+      g.addColorStop(0, `rgba(${n.hue},${.10 * ba})`);
+      g.addColorStop(.5,`rgba(${n.hue},${.04 * ba})`);
+      g.addColorStop(1, `rgba(${n.hue},0)`);
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(nx, ny, nr, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    /* ── Draw: Pulse rings ── */
+    pulseRings = pulseRings.filter(ring => {
+      ring.r += ring.speed;
+      ring.alpha -= ring.alpha / (ring.maxR / ring.speed);
+      if (ring.alpha < .005 || ring.r > ring.maxR) return false;
+      ctx.beginPath();
+      ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${ring.hue},${ring.alpha * ba})`;
+      ctx.lineWidth   = 1;
+      ctx.stroke();
+      return true;
+    });
+
+    /* ── Draw: Constellations ── */
+    constellations.forEach(cl => {
+      cl.edges.forEach(([a, b]) => {
+        ctx.beginPath();
+        ctx.moveTo(cl.nodes[a].x, cl.nodes[a].y);
+        ctx.lineTo(cl.nodes[b].x, cl.nodes[b].y);
+        ctx.strokeStyle = `rgba(180,160,255,${.07 * ba})`;
+        ctx.lineWidth   = .5;
+        ctx.stroke();
+      });
+      cl.nodes.forEach(n => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200,180,255,${.55 * ba})`;
+        ctx.fill();
+      });
+    });
+
+    /* ── Draw: Stars (with twinkle and glow for large ones) ── */
+    stars.forEach(s => {
+      s.twinklePhase += s.twinkleSpd;
+      const a = s.alpha * (.55 + .45 * Math.sin(s.twinklePhase)) * ba;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${s.hue},${a})`;
+      ctx.fill();
+      /* Soft glow only for larger stars (r > 1.1) to save draw calls */
+      if (s.r > 1.1) {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${s.hue},${a * .15})`;
+        ctx.fill();
       }
     });
 
-    playClick(); /* subtle sound on filter change */
-  });
-});
-
-
-/* ================= 13. PARTICLE BACKGROUND ================= */
-/* Canvas-based floating dot animation.
-   animationId stored so we can cancel cleanly on resize. */
-
-const canvas = document.getElementById("particles");
-const ctx    = canvas.getContext("2d");
-
-canvas.width  = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let particles  = [];
-let animationId;
-
-function createParticles(){
-  particles = [];
-  for(let i = 0; i < 100; i++){
-    particles.push({
-      x     : Math.random() * canvas.width,
-      y     : Math.random() * canvas.height,
-      size  : Math.random() * 2 + 1,           /* 1–3px */
-      speedX: (Math.random() - 0.5) * 0.7,
-      speedY: (Math.random() - 0.5) * 0.7
+    /* ── Draw: Particles + mouse attraction physics ── */
+    parts.forEach(p => {
+      /* Attract particle toward mouse within 200px radius */
+      const dx = pmx - p.x, dy = pmy - p.y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < 200) {
+        const f = (200 - d) / 200 * .0008;
+        p.vx += dx * f;
+        p.vy += dy * f;
+      }
+      /* Apply friction + clamp speed to 1.5 */
+      p.vx *= .993; p.vy *= .993;
+      const spd = Math.hypot(p.vx, p.vy);
+      if (spd > 1.5) { p.vx /= spd / 1.5; p.vy /= spd / 1.5; }
+      /* Move + wrap around edges */
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      /* Draw particle dot */
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${PART_COLORS[p.ci]},${.6 * ba})`;
+      ctx.fill();
     });
-  }
-}
 
-function animate(){
-  animationId = requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles.forEach(p => {
-    p.x += p.speedX;
-    p.y += p.speedY;
-    /* Wrap around edges so particles loop endlessly */
-    if(p.x < 0)             p.x = canvas.width;
-    if(p.x > canvas.width)  p.x = 0;
-    if(p.y < 0)             p.y = canvas.height;
-    if(p.y > canvas.height) p.y = 0;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(56,189,248,0.6)";
-    ctx.fill();
+    /* ── Draw: Particle connection lines ── */
+    for (let i = 0; i < parts.length; i++) {
+      for (let j = i + 1; j < parts.length; j++) {
+        const dx = parts[i].x - parts[j].x;
+        const dy = parts[i].y - parts[j].y;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < CONN_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(parts[i].x, parts[i].y);
+          ctx.lineTo(parts[j].x, parts[j].y);
+          ctx.strokeStyle = `rgba(${PART_COLORS[parts[i].ci]},${(1 - d / CONN_DIST) * .2 * ba})`;
+          ctx.lineWidth   = .6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* ── Draw: Shooting stars ── */
+    shooters = shooters.filter(s => {
+      s.x += s.vx; s.y += s.vy; s.alpha -= s.fade;
+      if (s.alpha <= 0 || s.x > W + 150 || s.y > H + 150) return false;
+
+      const mag  = Math.hypot(s.vx, s.vy);
+      const tail = { x: s.x - (s.vx / mag) * s.len, y: s.y - (s.vy / mag) * s.len };
+      const grad = ctx.createLinearGradient(tail.x, tail.y, s.x, s.y);
+      grad.addColorStop(0,   s.color + '0)');
+      grad.addColorStop(.7,  s.color + (s.alpha * .4 * ba) + ')');
+      grad.addColorStop(1,   s.color + (s.alpha * ba) + ')');
+
+      ctx.beginPath();
+      ctx.moveTo(tail.x, tail.y);
+      ctx.lineTo(s.x, s.y);
+      ctx.strokeStyle = grad;
+      ctx.lineWidth   = s.width;
+      ctx.shadowBlur  = 12;
+      ctx.shadowColor = s.color + (s.alpha * .8) + ')';
+      ctx.stroke();
+      ctx.shadowBlur  = 0;
+
+      /* Head flare dot */
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.width * 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = s.color + (s.alpha * .9 * ba) + ')';
+      ctx.fill();
+
+      return true;
+    });
+
+    rafId = requestAnimationFrame(draw); /* schedule next frame */
+  }
+
+  /* Initial setup */
+  resize();
+  rafId = requestAnimationFrame(draw);
+})();
+
+
+/* ─── §14  3D CARD TILT EFFECT ────────────────────────────────── */
+/*
+   On mousemove over .tilt-card: rotateX/Y up to ±9° based on
+   the cursor's offset from the card centre.
+   On mouseleave: smoothly resets to flat.
+   The project image inside gets a subtle parallax shift too.
+*/
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r  = card.getBoundingClientRect();
+    const cx = r.left + r.width  / 2;
+    const cy = r.top  + r.height / 2;
+    const rx = ((e.clientY - cy) / (r.height / 2)) * -9;
+    const ry = ((e.clientX - cx) / (r.width  / 2)) *  9;
+
+    card.style.transform  = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02,1.02,1.02)`;
+    card.style.transition = 'transform 0.08s ease';
+
+    /* Parallax the card's image in the opposite direction */
+    const img = card.querySelector('.proj-img');
+    if (img) {
+      img.style.transform  = `translate(${ry * .55}px, ${rx * -.55}px) scale(1.06)`;
+      img.style.transition = 'transform 0.08s ease';
+    }
   });
-}
 
-/* Cancel loop, resize canvas, rebuild particles, restart on window resize */
-window.addEventListener("resize", () => {
-  cancelAnimationFrame(animationId);
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-  createParticles();
-  animate();
+  card.addEventListener('mouseleave', () => {
+    card.style.transform  = '';
+    card.style.transition = 'transform .55s cubic-bezier(.4,0,.2,1)';
+    const img = card.querySelector('.proj-img');
+    if (img) {
+      img.style.transform  = '';
+      img.style.transition = 'transform .55s cubic-bezier(.4,0,.2,1)';
+    }
+  });
 });
 
-/* Resume animation when user switches back to this browser tab */
-document.addEventListener("visibilitychange", () => {
-  if(!document.hidden){
-    cancelAnimationFrame(animationId);
-    animate();
-  }
+
+/* ─── §15  MAGNETIC BUTTON EFFECT ─────────────────────────────── */
+/*
+   .magnetic buttons shift toward the cursor on hover,
+   creating a satisfying tactile pull effect.
+   Shift amount: 32% of cursor offset from button centre.
+*/
+document.querySelectorAll('.magnetic').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r  = btn.getBoundingClientRect();
+    const dx = (e.clientX - r.left - r.width  / 2) * .32;
+    const dy = (e.clientY - r.top  - r.height / 2) * .32;
+    btn.style.transform  = `translate(${dx}px, ${dy}px)`;
+    btn.style.transition = 'transform .12s ease';
+  });
+  btn.addEventListener('mouseleave', () => {
+    btn.style.transform  = '';
+    btn.style.transition = 'transform .5s cubic-bezier(.4,0,.2,1)';
+  });
 });
 
-createParticles();
-animate();
 
+/* ─── §16  GITHUB REPOS ───────────────────────────────────────── */
+/*
+   Fetches latest 6 non-forked repos from GitHub API.
+   Shows skeleton placeholder cards while loading.
+   Falls back gracefully if API rate limit is hit.
+*/
+const GH_USER   = 'Visheshjais';
+const LANG_DOTS = {
+  JavaScript: '#F7DF1E',
+  TypeScript:  '#3178C6',
+  Python:      '#3572A5',
+  HTML:        '#E34C26',
+  CSS:         '#563D7C',
+  'C++':       '#F34B7D',
+  default:     '#8888aa',
+};
 
-/* ================= 14. GITHUB REPOS ================= */
-/* Fetches the latest 6 non-forked repos from the GitHub REST API.
-   Each card shows name, description, star/fork counts, and a link. */
+async function loadRepos() {
+  const grid = $('repos');
+  if (!grid) return;
 
-fetch("https://api.github.com/users/Visheshjais/repos?sort=updated")
-  .then(res => res.json())
-  .then(data => {
-    const repoContainer = document.getElementById("repos");
-    repoContainer.innerHTML = "";
-    data
-      .filter(repo => !repo.fork) /* exclude forks */
-      .slice(0, 6)                /* max 6 repos */
-      .forEach(repo => {
-        const div = document.createElement("div");
-        div.classList.add("repo");
-        div.innerHTML = `
-          <h3>${repo.name}</h3>
-          <p>${repo.description || "No description available"}</p>
+  /* Show 6 skeleton placeholder cards while fetching */
+  grid.innerHTML = Array(6).fill(`
+    <div class="repo-card" style="opacity:.35; pointer-events:none">
+      <div class="repo-name"><i class="fab fa-github"></i> Loading…</div>
+      <div class="repo-desc">Fetching data…</div>
+    </div>`).join('');
+
+  try {
+    const res  = await fetch(`https://api.github.com/users/${GH_USER}/repos?sort=updated&per_page=20`);
+    const data = await res.json();
+
+    if (!Array.isArray(data)) throw new Error('Rate limit or API error');
+
+    const repos = data.filter(r => !r.fork).slice(0, 6);
+
+    grid.innerHTML = repos.map(r => {
+      const lang = r.language || 'N/A';
+      const dot  = LANG_DOTS[lang] || LANG_DOTS.default;
+      /* Truncate long descriptions */
+      const desc = r.description
+        ? (r.description.length > 85 ? r.description.slice(0, 85) + '…' : r.description)
+        : 'No description.';
+
+      return `
+        <a href="${r.html_url}" target="_blank" rel="noopener" class="repo-card">
+          <div class="repo-name"><i class="fab fa-github" style="opacity:.4"></i> ${r.name}</div>
+          <div class="repo-desc">${desc}</div>
           <div class="repo-meta">
-            <span><i class="fas fa-star"></i> ${repo.stargazers_count}</span>
-            <span><i class="fas fa-code-branch"></i> ${repo.forks_count}</span>
+            ${lang !== 'N/A' ? `<span><span class="repo-lang-dot" style="background:${dot}"></span>${lang}</span>` : ''}
+            <span>⭐ ${r.stargazers_count}</span>
+            <span><i class="fas fa-code-branch"></i> ${r.forks_count}</span>
           </div>
-          <a href="${repo.html_url}" target="_blank" class="repo-link">
-            View Repo <i class="fas fa-arrow-right"></i>
-          </a>`;
-        repoContainer.appendChild(div);
-      });
-  })
-  .catch(() => {
-    /* Show friendly error if API call fails (rate limit, offline etc.) */
-    document.getElementById("repos").innerHTML =
-      '<p style="color:#94a3b8;">Could not load repositories. Please check back later.</p>';
-  });
+        </a>`;
+    }).join('');
+
+    /* Apply stagger reveal animation to freshly injected repo cards */
+    grid.querySelectorAll('.repo-card').forEach(c => stagObs.observe(c));
+
+  } catch {
+    grid.innerHTML = '<p style="color:var(--t2); text-align:center; padding:32px">Could not load repositories. GitHub API rate limit may have been reached.</p>';
+  }
+}
+loadRepos();
 
 
-/* ================= 15. PROJECT DATA & MODAL ================= */
-/* All project content in one object.
-   To add a demo video: put .mp4 in videos/ and set videoSrc path.
-   Leave videoSrc as "" to show the "coming soon" fallback screen. */
-
+/* ─── §17  PROJECT DATA — ALL 5 PROJECTS ─────────────────────── */
+/*
+   Single source of truth for all project modal content.
+   Images: PNG only (images/*.png, filenames use hyphens not spaces).
+   videoSrc: empty string = "coming soon" message shown.
+*/
 const projectData = {
+
   groovix: {
-    title      : "Groovix Music Player",
-    description: "A Spotify-inspired music streaming web app built on the MERN stack. Features JWT authentication, playlist management, audio streaming, and a fully interactive player UI with smooth playback controls.",
-    tech       : ["React", "Node.js", "MongoDB", "Express"],
-    images     : ["images/groovix 1.png", "images/groovix 2.png", "images/groovix 3.png"],
-    videoSrc   : "videos/groovix-demo.mp4",             // ← demo video shown in modal Video tab
-    github     : "https://github.com/Visheshjais/Groovix-MuiscPlayer",
-    demo       : "https://groovix-frontend.vercel.app/" // ← live site link
+    title:       'Groovix Music Player',
+    description: 'A Spotify-inspired music streaming web app built on the MERN stack. Streams music in real-time via the YouTube Data API. Features JWT authentication with HTTP-only cookies, user playlists, song likes, search, and a fully animated dark-mode player with play/pause, seek, volume, and shuffle controls. Frontend built with React + Vite.',
+    tech:        ['React', 'Node.js', 'Express', 'MongoDB', 'YouTube API', 'JWT', 'Vite'],
+    images:      ['images/groovix-1.png', 'images/groovix-2.png', 'images/groovix-3.png'],
+    fallback:    ['images/groovix-1.png', 'images/groovix-2.png', 'images/groovix-3.png'],
+    github:      'https://github.com/Visheshjais/Groovix-MuiscPlayer',
+    demo:        'https://groovix-frontend.vercel.app/',
+    videoSrc:    '',
   },
 
   jobhunt: {
-    title      : "JobHunt — Full Stack Job Portal",
-    description: "A full-stack job portal where freshers can browse and apply to jobs while recruiters can post listings, manage company profiles, and accept or reject applicants. Features Google OAuth 2.0 login, Cloudinary resume & photo uploads, Redux Toolkit state management, JWT-cookie auth, and a responsive dark-gradient UI.",
-    tech       : ["React", "Node.js", "Express", "MongoDB", "Redux Toolkit", "Tailwind CSS", "Google OAuth", "Cloudinary", "JWT"],
-    images     : ["images/jobhunt 1.png", "images/jobhunt 2.png", "images/jobhunt 3.png","images/jobhunt 4.png"],   // ← add more screenshots as you capture them
-    videoSrc   : "",                          // ← add demo video path here when ready
-    github     : "https://github.com/Visheshjais/JobHunt",
-    demo       : "https://job-hunt-frontend-nine.vercel.app/" // ← live site link
+    title:       'JobHunt — Full Stack Job Portal',
+    description: 'Dual-role job portal. Job seekers browse listings, apply with resume uploads, and track application status (Pending → Accepted/Rejected). Recruiters register companies, post jobs, and manage candidates. Google OAuth 2.0 login, Cloudinary for file storage, Redux Toolkit for state, JWT-cookie auth. React + Tailwind CSS frontend.',
+    tech:        ['React', 'Node.js', 'Express', 'MongoDB', 'Redux Toolkit', 'Tailwind CSS', 'Google OAuth', 'Cloudinary', 'JWT'],
+    images:      ['images/jobhunt-1.png', 'images/jobhunt-2.png', 'images/jobhunt-3.png', 'images/jobhunt-4.png'],
+    fallback:    ['images/jobhunt-1.png', 'images/jobhunt-2.png', 'images/jobhunt-3.png', 'images/jobhunt-4.png'],
+    github:      'https://github.com/Visheshjais/JobHunt',
+    demo:        'https://job-hunt-frontend-nine.vercel.app/',
+    videoSrc:    '',
   },
 
   golf: {
-    title      : "Golf Charity Platform",
-    description: "A subscription-based golf & charity web app with Stripe-powered monthly/yearly plans, golf score tracking, monthly prize draws with animated ball reveals, charity fundraising with independent donations, a winner verification flow, and a full admin dashboard for managing users, draws, charities, and payouts.",
-    tech       : ["React", "Vite", "Node.js", "Express", "MongoDB", "Stripe", "JWT", "Nodemailer"],
-    images     : ["images/golf 1.png", "images/golf 2.png", "images/golf 3.png", "images/golf 4.png", "images/golf 5.png"],      // ← add more screenshots as you capture them
-    videoSrc   : "",                          // ← add demo video path here when ready
-    github     : "https://github.com/Visheshjais/golf-platform",
-    demo       : "https://golfplatform-frontend.vercel.app/" // ← live site link
+    title:       'Golf Charity Platform',
+    description: 'Subscription-based golf & charity web app. Users subscribe via Stripe (monthly/yearly), submit golf scores, and enter monthly prize draws. Charity module for donations and fundraising tracking. Animated ball-reveal draw at month end. Admin dashboard for draw management, winner verification, charity control, and payouts. Nodemailer for email notifications.',
+    tech:        ['React', 'Vite', 'Node.js', 'Express', 'MongoDB', 'Stripe', 'JWT', 'Nodemailer'],
+    images:      ['images/golf-1.png', 'images/golf-2.png', 'images/golf-3.png', 'images/golf-4.png', 'images/golf-5.png'],
+    fallback:    ['images/golf-1.png', 'images/golf-2.png', 'images/golf-3.png', 'images/golf-4.png', 'images/golf-5.png'],
+    github:      'https://github.com/Visheshjais/golf-platform',
+    demo:        'https://golfplatform-frontend.vercel.app/',
+    videoSrc:    '',
   },
 
   unmasking: {
-    title      : "Unmasking Illusion",
-    description: "A deepfake detection system that uses PyTorch deep learning models to classify manipulated faces in images and videos, with a web interface for real-time predictions.",
-    tech       : ["Python", "PyTorch", "JavaScript", "Flask"],
-    images     : ["images/Unmasking 1.png", "images/Unmasking 2.png", "images/Unmasking 3.png"],
-    videoSrc   : "",  // ← add demo video path here when ready
-    github     : "https://github.com/Visheshjais/Unmasking-Illusion-deepfake-detection-web-app",
-    demo       : ""   // ← no live deployment yet, modal will show "Demo coming soon"
+    title:       'Unmasking Illusion — Deepfake Detection',
+    description: 'AI-powered deepfake detection system. Upload an image or video clip; the system runs it through a fine-tuned EfficientNet B4 model (PyTorch) trained on FaceForensics++ dataset, achieving ~92% accuracy. OpenCV handles frame extraction and face-region cropping. Flask backend returns confidence score and a visual heatmap of tampered regions. HTML/CSS/JS drag-and-drop frontend.',
+    tech:        ['Python', 'PyTorch', 'EfficientNet B4', 'Flask', 'OpenCV', 'JavaScript', 'HTML5'],
+    images:      ['images/Unmasking-1.png', 'images/Unmasking-2.png', 'images/Unmasking-3.png'],
+    fallback:    ['images/Unmasking-1.png', 'images/Unmasking-2.png', 'images/Unmasking-3.png'],
+    github:      'https://github.com/Visheshjais/Unmasking-Illusion-deepfake-detection-web-app',
+    demo:        '',
+    videoSrc:    '',
   },
 
   translation: {
-    title      : "Lingua AI — All-in-One Translation",
-    description: "A multilingual translation platform supporting 50+ languages with a clean, responsive interface and multiple translation methods including text, document, and speech translation.",
-    tech       : ["Node.js", "JavaScript", "HTML", "CSS"],
-    images     : [
-      "images/Lingua AI-All-in-One Translation 1.png",
-      "images/Lingua AI-All-in-One Translation 2.png",
-      "images/Lingua AI-All-in-One Translation 3.png",
-      "images/Lingua AI-All-in-One Translation 4.png",
-      "images/Lingua AI-All-in-One Translation 5.png",
-      "images/Lingua AI-All-in-One Translation 6.png"
+    title:       'Lingua AI — All-in-One Translation',
+    description: 'Multilingual translation platform supporting 50+ languages. Four translation modes: Text (type and translate instantly), Voice Input (speak via Web Speech API), Text-to-Speech (hear translation in target language), Document Upload (translate .txt/.pdf files). Built with pure HTML/CSS/JavaScript — no frameworks. Features dark mode, language auto-detect, and copy-to-clipboard buttons.',
+    tech:        ['Node.js', 'JavaScript', 'HTML5', 'CSS3', 'Web Speech API', 'Translation APIs'],
+    images: [
+      'images/Lingua-AI-All-in-One-Translation-1.png',
+      'images/Lingua-AI-All-in-One-Translation-2.png',
+      'images/Lingua-AI-All-in-One-Translation-3.png',
+      'images/Lingua-AI-All-in-One-Translation-4.png',
+      'images/Lingua-AI-All-in-One-Translation-5.png',
+      'images/Lingua-AI-All-in-One-Translation-6.png',
     ],
-    videoSrc   : "",                              // ← add demo video path here when ready
-    github     : "https://github.com/Visheshjais/LinguaAI",
-    demo       : "https://lingua-ai-nu.vercel.app/" // ← live site link
-  }
+    fallback: [
+      'images/Lingua-AI-All-in-One-Translation-1.png',
+      'images/Lingua-AI-All-in-One-Translation-2.png',
+      'images/Lingua-AI-All-in-One-Translation-3.png',
+      'images/Lingua-AI-All-in-One-Translation-4.png',
+      'images/Lingua-AI-All-in-One-Translation-5.png',
+      'images/Lingua-AI-All-in-One-Translation-6.png',
+    ],
+    github:   'https://github.com/Visheshjais/LinguaAI',
+    demo:     'https://lingua-ai-nu.vercel.app/',
+    videoSrc: '',
+  },
+
+  /* ── PROJECT 06: TaskSphere ── */
+  tasksphere: {
+    title:       'TaskSphere — Multi-Tenant Task Management Platform',
+    description: 'Full-stack MERN task management platform built for multiple organisations (multi-tenancy) with role-based access control. Three roles: SuperAdmin, Admin, and Member — each with isolated dashboards and permissions. Features a Kanban drag-and-drop board, dashboard analytics, overdue task alerts, and member workload management.',
+    tech:        ['React', 'Vite', 'Node.js', 'Express', 'MongoDB', 'Tailwind CSS', 'JWT'],
+    /* No screenshots yet — array populated with a placeholder so modal opens cleanly */
+    images:  ['images/tasksphere-placeholder.png'],
+    fallback:['images/tasksphere-placeholder.png'],
+    github:   '#',   /* Add your GitHub link here when ready */
+    demo:     '#',   /* Add your Live Demo link here when ready */
+    videoSrc: '',
+  },
 };
 
-let currentSlide   = 0;
-let currentProject = null;
 
-/* Opens modal for the given project key.
-   Populates all fields, resets to screenshots tab,
-   builds dot indicators, and locks background scroll. */
-function openProject(key){
-  const proj = projectData[key];
-  if(!proj) return;
+/* ── Modal state ── */
+let curSlide   = 0;
+let curProject = null;
 
-  currentProject = proj;
-  currentSlide   = 0;
+/* Opens the project modal, populates all content, and shows it */
+function openProject(key) {
+  const p = projectData[key];
+  if (!p) return;
 
-  document.getElementById("modalTitle").innerText       = proj.title;
-  document.getElementById("modalDescription").innerText = proj.description;
-  document.getElementById("modalTech").innerHTML        = proj.tech.map(t=>`<span>${t}</span>`).join("");
-  document.getElementById("modalGithub").href           = proj.github;
-  document.getElementById("modalDemo").href             = proj.demo;
+  curProject = p;
+  curSlide   = 0;
 
-  switchTab("images");
-  buildDots(proj.images.length);
+  $('modalTitle').textContent       = p.title;
+  $('modalDescription').textContent = p.description;
+  /* Tech tag spans */
+  $('modalTech').innerHTML = p.tech.map(t => `<span>${t}</span>`).join('');
+
+  $('modalGithub').href = p.github || '#';
+  $('modalDemo').href   = p.demo   || '#';
+
+  buildDots(p.images.length);
   showSlide();
-  setupVideo(proj.videoSrc);
+  setupVideo(p.videoSrc);
+  switchTab('images');
 
-  projectModal.style.display   = "flex";
-  document.body.style.overflow = "hidden"; /* lock background scroll */
+  projectModal.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
-/* Loads video src or shows "coming soon" fallback.
-   Always pauses and rewinds first to clear previous project. */
-function setupVideo(src){
-  modalVideo.pause();
-  modalVideo.currentTime = 0;
-  if(src && src.trim() !== ""){
+/* Build dot indicator row for the image slider */
+function buildDots(n) {
+  sliderDots.innerHTML = Array.from({ length: n }, (_, i) =>
+    `<div class="sl-dot${i === 0 ? ' active' : ''}" onclick="goSlide(${i})"></div>`
+  ).join('');
+}
+
+/* Show the current slide image using the PNG path for the current slide */
+function showSlide() {
+  if (!curProject) return;
+  sliderImage.src = curProject.fallback[curSlide];
+  /* Update active dot indicator */
+  document.querySelectorAll('.sl-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === curSlide);
+  });
+}
+
+function goSlide(i) {
+  if (!curProject) return;
+  curSlide = (i + curProject.images.length) % curProject.images.length;
+  showSlide();
+}
+function nextSlide() { if (curProject) goSlide(curSlide + 1); }
+function prevSlide() { if (curProject) goSlide(curSlide - 1); }
+
+/* Set up the video tab (show video or "coming soon" message) */
+function setupVideo(src) {
+  if (src) {
     modalVideoSrc.src        = src;
     modalVideo.load();
-    modalVideo.style.display = "block";
-    noVideoMsg.style.display = "none";
+    modalVideo.style.display = 'block';
+    noVideoMsg.style.display = 'none';
   } else {
-    modalVideoSrc.src        = "";
-    modalVideo.style.display = "none";
-    noVideoMsg.style.display = "flex";
+    modalVideo.style.display = 'none';
+    noVideoMsg.style.display = 'flex';
   }
 }
 
-/* Switches between Screenshots and Video tab panels.
-   Pauses video when leaving the video panel. */
-function switchTab(tab){
-  const isImages = tab === "images";
-  panelImages.style.display = isImages ? "block" : "none";
-  panelVideo.style.display  = isImages ? "none"  : "block";
-  tabImages.classList.toggle("active",  isImages);
-  tabVideo.classList.toggle("active",  !isImages);
-  if(isImages) modalVideo.pause();
+/* Switch between Screenshots and Video tabs in the modal */
+function switchTab(tab) {
+  const imgs = tab === 'images';
+  panelImages.style.display = imgs ? 'block' : 'none';
+  panelVideo.style.display  = imgs ? 'none'  : 'block';
+  tabImages.classList.toggle('active',  imgs);
+  tabVideo.classList.toggle('active',  !imgs);
+  /* Pause video when switching away from it */
+  if (imgs && modalVideo && !modalVideo.paused) modalVideo.pause();
 }
 
-/* Builds one clickable dot indicator per screenshot. */
-function buildDots(count){
-  sliderDots.innerHTML = "";
-  for(let i = 0; i < count; i++){
-    const dot = document.createElement("span");
-    dot.classList.add("dot");
-    if(i === 0) dot.classList.add("active");
-    dot.onclick = () => goToSlide(i);
-    sliderDots.appendChild(dot);
-  }
+function closeProject() {
+  projectModal.classList.remove('open');
+  document.body.style.overflow = '';
+  if (modalVideo && !modalVideo.paused) modalVideo.pause();
+  curProject = null;
 }
 
-/* Syncs dot highlight to current slide. */
-function updateDots(){
-  document.querySelectorAll(".dot").forEach((dot,i) => {
-    dot.classList.toggle("active", i === currentSlide);
+/* Close modal on backdrop click */
+if (projectModal) {
+  projectModal.addEventListener('click', e => {
+    if (e.target === projectModal) closeProject();
   });
 }
 
-/* Displays the current slide image and updates dots. */
-function showSlide(){
-  sliderImage.src = currentProject.images[currentSlide];
-  updateDots();
-}
-
-/* Jump directly to a specific slide (used by dot click handlers). */
-function goToSlide(i){
-  currentSlide = i;
-  showSlide();
-}
-
-/* Advance to next screenshot — wraps back to 0 after last. */
-function nextSlide(){
-  currentSlide = (currentSlide + 1) % currentProject.images.length;
-  showSlide();
-}
-
-/* Go back to previous screenshot — wraps to last from first. */
-function prevSlide(){
-  currentSlide = (currentSlide - 1 + currentProject.images.length) % currentProject.images.length;
-  showSlide();
-}
-
-/* Close modal: stop video, hide overlay, restore page scroll. */
-function closeProject(){
-  modalVideo.pause();
-  modalVideo.currentTime       = 0;
-  projectModal.style.display   = "none";
-  document.body.style.overflow = "";
-}
-
-/* Close by clicking the dark backdrop (outside the modal card). */
-window.addEventListener("click", e => {
-  if(e.target === projectModal) closeProject();
-});
-
-/* Close with Escape key — standard dialog accessibility pattern. */
-window.addEventListener("keydown", e => {
-  if(e.key === "Escape") closeProject();
+/* Keyboard controls in modal: Escape = close, ← / → = prev/next image */
+document.addEventListener('keydown', e => {
+  if (!projectModal || !projectModal.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeProject();
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft')  prevSlide();
 });
 
 
-/* ================= 16. CONTACT FORM (EmailJS) ================= */
-/* EmailJS sends form data directly to Gmail — no backend needed.
-   Service ID : service_0kgo05i  (your Gmail service)
-   Template ID: replace YOUR_TEMPLATE_ID below
-   Public Key : replace YOUR_PUBLIC_KEY at top of this file */
+/* ─── §18  CONTACT FORM (EmailJS) ─────────────────────────────── */
+/*
+   Submits the form using EmailJS sendForm().
+   Shows spinner on the button while sending.
+   On success: clears form, shows green success message.
+   On failure: shows red error with fallback email.
+   IMPORTANT: Replace service/template IDs with your own values from
+   emailjs.com Dashboard → Email Services / Email Templates.
+*/
+if (contactForm) contactForm.addEventListener('submit', async e => {
+  e.preventDefault();
 
-if(contactForm){
-  contactForm.addEventListener("submit", (e) => {
+  const btn = contactForm.querySelector('button[type="submit"]');
+  btn.disabled  = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending…';
+  formMessage.textContent = '';
+  formMessage.className   = '';
 
-    /* Stop the browser from navigating/refreshing on submit */
-    e.preventDefault();
-
-    /* Trim all values to remove accidental leading/trailing spaces */
-    const name    = contactForm.name.value.trim();
-    const email   = contactForm.email.value.trim();
-    const message = contactForm.message.value.trim();
-
-    /* Show warning and stop if any field is empty */
-    if(!name || !email || !message){
-      formMessage.innerText   = "⚠️ Please fill in all fields.";
-      formMessage.style.color = "#f87171"; /* red */
-      return;
-    }
-
-    /* Disable button and show loading state during send */
-    const submitBtn       = contactForm.querySelector("button[type='submit']");
-    submitBtn.textContent = "Sending...";
-    submitBtn.disabled    = true;
-    formMessage.innerText = "";
-
-    /* Send via EmailJS — reads name, email, message fields automatically */
-    emailjs.sendForm(
-      "service_0kgo05i",  /* ← your Gmail Service ID */
-      "template_zt1s51c", /* ← replace with your EmailJS Template ID */
+  try {
+    await emailjs.sendForm(
+      'service_portfolioVJ',   /* ← Replace with your EmailJS Service ID  */
+      'template_portfolioVJ',  /* ← Replace with your EmailJS Template ID */
       contactForm
-    )
-    .then(() => {
-      /* Success — email delivered to Gmail */
-      formMessage.innerText   = "✅ Message sent! I'll get back to you soon.";
-      formMessage.style.color = "#4ade80"; /* green */
-      contactForm.reset();                 /* clear form fields */
-    })
-    .catch(() => {
-      /* Failure — show error with direct email fallback */
-      formMessage.innerText   = "❌ Failed to send. Please email me directly.";
-      formMessage.style.color = "#f87171"; /* red */
-    })
-    .finally(() => {
-      /* Always re-enable button whether success or fail */
-      submitBtn.textContent = "✉ Send Message";
-      submitBtn.disabled    = false;
-    });
-
-  });
-}
-
-
-/* ================= 17. COPY EMAIL BUTTON ================= */
-/* Clicking the email info item copies the address to clipboard
-   and shows a brief toast notification for 2.5 seconds. */
-
-if(copyEmailBtn){
-  copyEmailBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText("jaiswalvishesh1214@gmail.com")
-      .then(() => {
-        /* Show the success toast */
-        copyToast.classList.add("show");
-        /* Auto-hide after 2.5 seconds */
-        setTimeout(() => copyToast.classList.remove("show"), 2500);
-        playClick(); /* subtle sound feedback */
-      })
-      .catch(() => {
-        /* Fallback if clipboard API is blocked (e.g. HTTP not HTTPS) */
-        formMessage.innerText   = "📋 Copy: jaiswalvishesh1214@gmail.com";
-        formMessage.style.color = "#38bdf8";
-      });
-  });
-}
-
-
-/* ================= 18. BACK TO TOP ================= */
-/* Smoothly scrolls the page back to the top.
-   Button visibility is toggled in the scroll handler above. */
-
-backToTop.addEventListener("click", () => {
-  window.scrollTo({ top:0, behavior:"smooth" });
-  playClick();
+    );
+    formMessage.textContent = '✅ Message sent! I\'ll reply soon.';
+    formMessage.className   = 'success';
+    contactForm.reset();
+  } catch (err) {
+    formMessage.textContent = '❌ Failed to send. Email me directly: jaiswalvishesh1214@gmail.com';
+    formMessage.className   = 'error';
+    console.error('EmailJS error:', err);
+  } finally {
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+  }
 });
 
 
-/* ================= 19.SOUND EFFECT ================= */
-/* AudioContext created once and reused — fixes browser autoplay policy.
-   Browser blocks sound until first user interaction on the page.
-   We resume the context on first click to unlock audio. */
+/* ─── §18b  PROJECT QUICK-DESC ACCORDION ──────────────────────── */
+/*
+   Toggles the expandable description panel inside each project card.
+   Closes any previously open panel first (only one open at a time).
+   Called via inline onclick — stopPropagation() prevents the card
+   from also opening the full project modal when toggling.
+*/
+function toggleQuickDesc(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen  = content.classList.contains('open');
 
-let audioCtx = null; /* single shared AudioContext — created on first click */
+  /* Close all other open panels */
+  document.querySelectorAll('.proj-quick-content.open').forEach(el => {
+    el.classList.remove('open');
+    el.previousElementSibling.classList.remove('open');
+  });
 
-function playClick(){
-  try{
-    /* Create AudioContext only once — reusing is more efficient */
-    if(!audioCtx){
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    /* Resume context if browser suspended it (autoplay policy) */
-    if(audioCtx.state === "suspended"){
-      audioCtx.resume();
-    }
-
-    const osc  = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    osc.type            = "sine";
-    osc.frequency.value = 620; /* pitch of the tick sound */
-
-    /* Start quiet, fade to silence over 80ms */
-    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-
-    osc.start(audioCtx.currentTime);
-    osc.stop(audioCtx.currentTime + 0.08);
-  } catch(e){
-    /* Silently fail if audio not supported */
+  /* Toggle the clicked panel */
+  if (!isOpen) {
+    content.classList.add('open');
+    btn.classList.add('open');
   }
 }
 
-/* Unlock audio on very first interaction anywhere on page */
-document.addEventListener("click", () => {
-  if(!audioCtx){
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if(audioCtx.state === "suspended"){
-    audioCtx.resume();
-  }
-}, { once: true }); /* { once:true } removes listener after first trigger */
 
-/* ================= SOUND EFFECTS — WHOLE SITE ================= */
-/* Attaches the subtle click sound to every interactive element.
-   Covers: all buttons, all links, nav links, filter buttons,
-   skill cards, highlight cards, social icons, theme toggle,
-   back to top, WhatsApp button, copy email, footer links. */
+/* ─── §19  COPY EMAIL ─────────────────────────────────────────── */
+/*
+   Copies the email address to clipboard when the email contact row
+   is clicked. Shows a toast notification for 2.8 seconds.
+*/
+if (copyEmailBtn) copyEmailBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText('jaiswalvishesh1214@gmail.com').then(() => {
+    if (copyToast) {
+      copyToast.classList.add('show');
+      setTimeout(() => copyToast.classList.remove('show'), 2800);
+    }
+  });
+});
 
-document.querySelectorAll(`
-  .btn-primary,
-  .btn-outline,
-  .btn,
-  .card-btn,
-  .modal-links a,
-  .repo-link,
-  .nav-links a,
-  .filter-btn,
-  .social-icons a,
-  .highlight-card,
-  .cert-card,
-  .contact-info-item,
-  .footer-links a,
-  .modal-tab,
-  .slide-btn,
-  .dot,
-  #themeToggle,
-  #backToTop,
-  #whatsappBtn,
-  #copyEmailBtn,
-  .logo-img,
-  .close-btn
-`).forEach(el => {
-  el.addEventListener("click", playClick);
+
+/* ─── §20  BACK TO TOP ────────────────────────────────────────── */
+/* Smooth scroll to top — FAB button shown after 280px scroll */
+if (backToTop) backToTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+
+/* ─── §21  BUTTON RIPPLE EFFECT ──────────────────────────────── */
+/*
+   Adds a water-ripple effect to all .btn elements on click.
+   Creates a <span> element at the click position, animates it
+   expanding outward, then removes it after the animation ends.
+*/
+document.querySelectorAll('.btn').forEach(btn => {
+  btn.addEventListener('click', function (e) {
+    const r     = btn.getBoundingClientRect();
+    const spark = document.createElement('span');
+    const size  = Math.max(r.width, r.height) * 2;
+
+    spark.className    = 'ripple-spark';
+    spark.style.width  = size + 'px';
+    spark.style.height = size + 'px';
+    spark.style.left   = (e.clientX - r.left  - size / 2) + 'px';
+    spark.style.top    = (e.clientY - r.top   - size / 2) + 'px';
+
+    btn.appendChild(spark);
+    spark.addEventListener('animationend', () => spark.remove());
+  });
+});
+
+
+/* ─── §17b  CERTIFICATE IMAGE LIGHTBOX ───────────────────────── */
+/*
+   Handles the certificate image modal (separate from project modal).
+   Three certificates are supported:
+     'cpp'     → images/cert-cpp.jpg    (Udemy C++ course, 2024)
+     'dsa'     → images/cert-dsa.jpg    (Udemy DSA course, 2024)
+     'infosys' → images/cert-infosys.jpg (Infosys Springboard, 2022)
+
+   openCert(key)  — swaps the <img> src and shows the modal
+   closeCert()    — hides the modal and clears the src
+   Backdrop click and ESC key also close the modal.
+*/
+
+/* Map cert keys to their image paths */
+const certImages = {
+  cpp:     'images/cert-cpp.jpg',
+  dsa:     'images/cert-dsa.jpg',
+  infosys: 'images/cert-infosys.jpg',
+};
+
+/* Opens the certificate lightbox and loads the correct image */
+function openCert(key) {
+  const modal = document.getElementById('certModal');
+  const img   = document.getElementById('certModalImg');
+  if (!modal || !img || !certImages[key]) return;
+
+  img.src = certImages[key];
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden'; /* prevent page scroll while modal open */
+}
+
+/* Closes the certificate lightbox */
+function closeCert() {
+  const modal = document.getElementById('certModal');
+  const img   = document.getElementById('certModalImg');
+  if (!modal) return;
+
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  /* Clear src after transition so browser frees memory */
+  setTimeout(() => { if (img) img.src = ''; }, 350);
+}
+
+/* Close when clicking the dark backdrop (outside the modal box) */
+const certModalBg = document.getElementById('certModal');
+if (certModalBg) {
+  certModalBg.addEventListener('click', e => {
+    if (e.target === certModalBg) closeCert();
+  });
+}
+
+/* ESC key closes cert modal (piggybacks on existing keydown listener) */
+document.addEventListener('keydown', e => {
+  const certModal = document.getElementById('certModal');
+  if (certModal && certModal.classList.contains('open') && e.key === 'Escape') {
+    closeCert();
+  }
 });

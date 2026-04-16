@@ -1,210 +1,265 @@
 <!DOCTYPE html>
+<!-- ══════════════════════════════════════════════════════
+     404.html — Custom error page for Vishesh Jaiswal Portfolio
+     Theme matches main portfolio: dark space / cosmic aesthetic
+     Auto-redirects to home after 8 seconds via JS countdown.
+══════════════════════════════════════════════════════ -->
 <html lang="en">
 <head>
+  <!-- ── Meta ── -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Title shown in browser tab when user lands on a broken/missing page -->
+  <meta name="robots" content="noindex">
   <title>404 — Page Not Found | Vishesh Jaiswal</title>
 
-  <!-- Same favicon as main portfolio for brand consistency -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/logo.png">
-  <link rel="shortcut icon" href="images/logo.png">
-  <link rel="apple-touch-icon" href="images/logo.png">
+  <!-- ── Fonts ── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- Same font as portfolio — Plus Jakarta Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome for the home icon on the back button -->
+  <!-- ── Icons ── -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+  <!-- ── Favicon ── -->
+  <link rel="icon" type="image/png" href="images/logo.png">
+
   <style>
-    /* Reset — remove default browser margin/padding */
-    *{ margin:0; padding:0; box-sizing:border-box; }
-
-    /* Dark background matching portfolio dark theme */
-    body{
-      font-family:'Plus Jakarta Sans', sans-serif;
-      background:#0f172a;
-      color:white;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:24px;
-      overflow:hidden; /* prevents scrollbars from particle canvas */
+    /* ── Design tokens (match main portfolio) ── */
+    :root {
+      --bg:  #050510;
+      --v:   #7c5cfc;
+      --c:   #00e5c8;
+      --g:   #ffcc47;
+      --t:   #e8e8ff;
+      --t2:  #8080a8;
+      --fh:  'Space Grotesk', sans-serif;
+      --fb:  'Inter', sans-serif;
     }
 
-    /* Particle canvas fixed behind all content — same as portfolio */
-    canvas{
-      position:fixed;
-      inset:0; /* shorthand for top:0 right:0 bottom:0 left:0 */
-      z-index:0;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--fb);
+      background: var(--bg);
+      color: var(--t);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 24px;
     }
 
-    /* All page content sits above the particle canvas */
-    .content{ position:relative; z-index:1; }
-
-    /* Logo in top-left corner — same as navbar logo */
-    .logo-link{
-      position:fixed;
-      top:20px;
-      left:24px;
-      z-index:10;
+    /* Star canvas behind everything */
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
     }
 
-    .logo-link img{
-      width:44px;
-      height:44px;
-      border-radius:50%;
-      border:2px solid #38bdf8;
-      object-fit:cover;
-      transition:0.3s;
+    /* Centered content wrapper */
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
     }
 
-    .logo-link img:hover{
-      box-shadow:0 0 14px #38bdf8;
-      transform:scale(1.08);
+    /* Giant glowing 404 */
+    .num {
+      font-family: var(--fh);
+      font-size: clamp(5rem, 20vw, 9rem);
+      font-weight: 700;
+      letter-spacing: -4px;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--v) 0%, var(--c) 60%, var(--g) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 40px rgba(124,92,252,0.5));
+      margin-bottom: 8px;
+      animation: pulse 3s ease-in-out infinite;
     }
 
-    /* Big "404" text — animated gradient shimmer same as section headings */
-    .error-code{
-      /* clamp(min, preferred, max) — scales smoothly between screen sizes */
-      font-size:clamp(80px, 22vw, 200px);
-      font-weight:800;
-      background:linear-gradient(90deg, #38bdf8, #6c63ff, #38bdf8);
-      background-size:200% auto;
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-      animation:shimmer404 3s linear infinite;
-      line-height:1;
-      margin-bottom:8px;
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 40px rgba(124,92,252,0.5)); }
+      50%       { filter: drop-shadow(0 0 70px rgba(0,229,200,0.6)); }
     }
 
-    /* Shimmer moves gradient left-to-right continuously */
-    @keyframes shimmer404{
-      0%  { background-position:200% center; }
-      100%{ background-position:-200% center; }
+    /* Astronaut emoji floating */
+    .astro {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      display: block;
+      margin-bottom: 16px;
+      animation: float 4s ease-in-out infinite;
     }
 
-    /* "Page Not Found" heading */
-    .error-title{
-      font-size:clamp(18px, 5vw, 30px);
-      font-weight:700;
-      margin-bottom:12px;
+    @keyframes float {
+      0%, 100% { transform: translateY(0)   rotate(-5deg); }
+      50%       { transform: translateY(-18px) rotate(8deg); }
     }
 
-    /* Descriptive text below heading */
-    .error-desc{
-      font-size:clamp(13px, 3vw, 16px);
-      color:#94a3b8; /* muted grey */
-      max-width:400px;
-      margin:0 auto 36px;
-      line-height:1.7;
+    h1 {
+      font-family: var(--fh);
+      font-size: clamp(1.3rem, 4vw, 1.8rem);
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--t);
     }
 
-    /* Back to Portfolio button — same gradient pill as hero buttons */
-    .back-btn{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:14px 32px;
-      background:linear-gradient(135deg, #38bdf8, #6c63ff);
-      color:#0f172a;
-      border-radius:50px;
-      text-decoration:none;
-      font-weight:700;
-      font-size:15px;
-      transition:0.3s;
-      box-shadow:0 4px 20px rgba(56,189,248,0.4);
+    p {
+      color: var(--t2);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
     }
 
-    /* Hover: lifts up with stronger glow */
-    .back-btn:hover{
-      transform:translateY(-3px);
-      box-shadow:0 8px 30px rgba(56,189,248,0.6);
+    /* Countdown badge */
+    .countdown {
+      display: inline-block;
+      background: rgba(124,92,252,0.15);
+      border: 1px solid rgba(124,92,252,0.3);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: .88rem;
+      color: var(--t2);
+      margin-bottom: 28px;
     }
 
-    /* Mobile responsive adjustments */
-    @media(max-width:480px){
-      .back-btn{ padding:12px 24px; font-size:14px; }
-      .logo-link img{ width:38px; height:38px; }
+    .countdown span {
+      color: var(--c);
+      font-weight: 600;
+    }
+
+    /* CTA button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-family: var(--fh);
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--v), var(--c));
+      color: #fff;
+      box-shadow: 0 0 30px rgba(124,92,252,0.35);
+      transition: transform .2s ease, box-shadow .2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 0 50px rgba(124,92,252,0.55);
+    }
+
+    /* Progress bar at bottom */
+    .prog-wrap {
+      width: 220px;
+      height: 3px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 99px;
+      margin: 28px auto 0;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, var(--v), var(--c));
+      transform-origin: left;
+      animation: drain 8s linear forwards;
+    }
+
+    @keyframes drain {
+      from { transform: scaleX(1); }
+      to   { transform: scaleX(0); }
     }
   </style>
 </head>
+
 <body>
+  <!-- Star background canvas -->
+  <canvas id="c404"></canvas>
 
-  <!-- Particle canvas — same floating dot animation as portfolio -->
-  <canvas id="particles"></canvas>
+  <div class="wrap">
+    <span class="astro">🧑‍🚀</span>
 
-  <!-- Logo top-left — clicking returns to portfolio home -->
-  <a href="index.html" class="logo-link">
-    <img src="images/logo.png" alt="Vishesh Jaiswal">
-  </a>
+    <!-- Giant error number -->
+    <div class="num">404</div>
 
-  <!-- Main 404 content -->
-  <div class="content">
-    <!-- Animated gradient "404" -->
-    <div class="error-code">404</div>
-    <h1 class="error-title">Page Not Found</h1>
-    <p class="error-desc">
-      Oops! The page you're looking for doesn't exist or has been moved.
-      Let's get you back on track.
+    <h1>Lost in Space</h1>
+
+    <p>
+      Oops! The page you're looking for has drifted into a black hole.
+      <br>Let's get you back to solid ground.
     </p>
-    <!-- Back button — returns to main portfolio -->
-    <a href="index.html" class="back-btn">
-      <i class="fas fa-home"></i> Back to Portfolio
+
+    <!-- Live countdown before auto-redirect -->
+    <div class="countdown">
+      Returning to home in <span id="cd">8</span>s
+    </div>
+
+    <br>
+
+    <!-- Manual home button -->
+    <a href="/" class="btn">
+      <i class="fas fa-home"></i> Back to Home
     </a>
+
+    <!-- Redirect progress bar (drains over 8s) -->
+    <div class="prog-wrap"><div class="prog-fill"></div></div>
   </div>
 
   <script>
-    /* ===== PARTICLE BACKGROUND — same as portfolio ===== */
-    /* Canvas-based floating blue dots animation.
-       Identical to main portfolio for visual consistency. */
+    /* ── Countdown + auto-redirect ── */
+    let t = 8;
+    const el = document.getElementById('cd');
+    const timer = setInterval(() => {
+      t--;
+      el.textContent = t;
+      if (t <= 0) { clearInterval(timer); window.location.href = '/'; }
+    }, 1000);
 
-    const canvas = document.getElementById("particles");
-    const ctx    = canvas.getContext("2d");
+    /* ── Mini star canvas for 404 page ── */
+    (function() {
+      const cv  = document.getElementById('c404');
+      const ctx = cv.getContext('2d');
+      let W, H, stars = [];
 
-    /* Set canvas to fill the full browser window */
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+      function resize() {
+        W = cv.width  = window.innerWidth;
+        H = cv.height = window.innerHeight;
+        stars = Array.from({ length: 220 }, () => ({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: Math.random() * 1.4 + 0.2,
+          a: Math.random() * 0.7 + 0.15,
+          sp: Math.random() * 0.02 + 0.004,
+          ph: Math.random() * Math.PI * 2,
+        }));
+      }
 
-    /* Create 80 particles with random position, size, and speed */
-    const particles = Array.from({ length: 80 }, () => ({
-      x     : Math.random() * canvas.width,
-      y     : Math.random() * canvas.height,
-      size  : Math.random() * 2 + 1,             /* 1–3px */
-      speedX: (Math.random() - 0.5) * 0.7,       /* random horizontal speed */
-      speedY: (Math.random() - 0.5) * 0.7        /* random vertical speed */
-    }));
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        stars.forEach(s => {
+          s.ph += s.sp;
+          const a = s.a * (0.5 + 0.5 * Math.sin(s.ph));
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(220,220,255,${a})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
 
-    /* Animation loop — runs every frame via requestAnimationFrame */
-    (function animate(){
-      requestAnimationFrame(animate);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        /* Wrap around edges so particles loop endlessly */
-        if(p.x < 0)             p.x = canvas.width;
-        if(p.x > canvas.width)  p.x = 0;
-        if(p.y < 0)             p.y = canvas.height;
-        if(p.y > canvas.height) p.y = 0;
-        /* Draw each particle as a soft blue circle */
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(56,189,248,0.6)";
-        ctx.fill();
-      });
+      window.addEventListener('resize', resize);
+      resize();
+      draw();
     })();
-
-    /* Resize canvas when browser window is resized */
-    window.addEventListener("resize", () => {
-      canvas.width  = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
   </script>
-
 </body>
 </html>
