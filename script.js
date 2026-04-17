@@ -34,7 +34,10 @@
    §22   Cursor Hover State — body.c-hover on interactive elements
    ══════════════════════════════════════════════════════════════════ */
 
-
+   
+/* Prevent scroll restoration on back/forward nav (some browsers restore to old scroll position by default) */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
 /* ─── §1  CINEMATIC INTRO / PRELOADER ───────────────────────── */
 /*
    Drives the full cinematic opening animation:
@@ -78,8 +81,12 @@
     loaded = true;
     if (bar) bar.style.width = '100%';
 
-    /* Hold at 100% for 300ms so user sees completion, then reveal */
-    setTimeout(() => {
+    /* Last letter animates at 2.10s delay + 0.4s duration = 2.5s from page start.
+       We wait until the full name is written before revealing (minimum 2.6s from load). */
+    const pageStartTime = performance.now();
+    const minWaitMs = 2600; /* ms from page load until all letters are visible */
+
+    function doReveal() {
       if (preloader) preloader.classList.add('reveal');
 
       /* After curtains finish sliding (900ms), fully remove overlay */
@@ -99,7 +106,12 @@
           }));
         });
       }, 900);
-    }, 300);
+    }
+
+    /* Wait until minWaitMs has elapsed since page load so all name letters appear */
+    const elapsed = performance.now() - pageStartTime;
+    const remaining = Math.max(300, minWaitMs - elapsed);
+    setTimeout(doReveal, remaining);
   });
 })();
 

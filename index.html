@@ -363,8 +363,8 @@
       <!-- Main heading: greeting + gradient name -->
       <h1 class="hero-name">
         <span class="hero-hi">Hello, I'm</span>
-        <!-- .hero-gradient applies animated shifting gradient to the name -->
-        <span class="hero-gradient">Vishesh<br>Jaiswal</span>
+        <!-- Each letter in its own span for individual glow on hover -->
+        <span class="hero-gradient hero-glow-name"><span class="glow-letter">V</span><span class="glow-letter">i</span><span class="glow-letter">s</span><span class="glow-letter">h</span><span class="glow-letter">e</span><span class="glow-letter">s</span><span class="glow-letter">h</span><br><span class="glow-letter">J</span><span class="glow-letter">a</span><span class="glow-letter">i</span><span class="glow-letter">s</span><span class="glow-letter">w</span><span class="glow-letter">a</span><span class="glow-letter">l</span></span>
       </h1>
 
       <!-- Typing effect row.
@@ -461,16 +461,28 @@
         <div class="av-ring ring-neon"></div>
         <div class="av-ring ring-inner"></div>
 
-        <!-- SVG corner spark accents (pure decoration) -->
+              <!-- SVG corner spark accents (pure decoration) -->
         <svg class="corner-sparks" viewBox="0 0 300 300" aria-hidden="true">
           <circle cx="12"  cy="12"  r="3" class="spark spark-1"/>
           <circle cx="288" cy="12"  r="3" class="spark spark-2"/>
           <circle cx="12"  cy="288" r="3" class="spark spark-3"/>
           <circle cx="288" cy="288" r="3" class="spark spark-4"/>
+
+          <!-- Top-left -->
           <line x1="20"  y1="12"  x2="50"  y2="12"  class="spark-line sl-1"/>
           <line x1="12"  y1="20"  x2="12"  y2="50"  class="spark-line sl-2"/>
+
+          <!-- Top-right -->
           <line x1="280" y1="12"  x2="250" y2="12"  class="spark-line sl-3"/>
           <line x1="288" y1="20"  x2="288" y2="50"  class="spark-line sl-4"/>
+
+          <!-- Bottom-left -->
+          <line x1="20"  y1="288" x2="50"  y2="288" class="spark-line sl-5"/>
+          <line x1="12"  y1="280" x2="12"  y2="250" class="spark-line sl-6"/>
+
+          <!-- Bottom-right -->
+          <line x1="280" y1="288" x2="250" y2="288" class="spark-line sl-7"/>
+          <line x1="288" y1="280" x2="288" y2="250" class="spark-line sl-8"/>
         </svg>
 
         <!-- Profile photo — WebP primary, PNG fallback -->
@@ -1074,18 +1086,17 @@
               <p>TaskSphere supports multiple organisations with fully isolated data (multi-tenancy). Three role tiers — <strong>SuperAdmin</strong>, <strong>Admin</strong>, and <strong>Member</strong> — each see a different dashboard and have different permissions. Core features: a <strong>Kanban drag-and-drop board</strong> (To Do → In Progress → Done), task creation with priority levels and assignee selection, <strong>search and filter</strong> by priority/assignee/title, <strong>dashboard analytics</strong> showing task counts, completion rates, and team stats, and <strong>overdue task highlighting</strong> with visual alerts. Member management lets admins activate/deactivate users and track individual workloads. Built with <strong>React + Vite + Tailwind CSS</strong> on the frontend, <strong>Node.js + Express + MongoDB (Mongoose)</strong> on the backend, and <strong>JWT</strong> for secure auth.</p>
             </div>
           </div>
+
+          <div class="proj-tech">
+            <span>React</span><span>Node.js</span><span>MongoDB</span><span>Tailwind CSS</span><span>JWT</span><span>Vite</span>
+          </div>
+
+          <div class="proj-actions" onclick="event.stopPropagation()">
+            <a href="#" class="pa-btn pa-gh"><i class="fab fa-github"></i> GitHub</a>
+            <span class="pa-btn pa-demo" style="opacity:.45; cursor:not-allowed; pointer-events:none;"><i class="fas fa-clock"></i> Demo Soon</span>
+          </div>
         </div>
-
-    <div class="proj-tech">
-      <span>React</span><span>Node.js</span><span>MongoDB</span><span>Tailwind CSS</span><span>JWT</span><span>Vite</span>
-    </div>
-
-    <div class="proj-actions" onclick="event.stopPropagation()">
-      <a href="#" class="pa-btn pa-gh"><i class="fab fa-github"></i> GitHub</a>
-      <span class="pa-btn pa-demo" style="opacity:.45; cursor:not-allowed; pointer-events:none;"><i class="fas fa-clock"></i> Demo Soon</span>
-    </div>
-  </div>
-</div>
+      </div>
 
     </div>
   </div>
