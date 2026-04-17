@@ -2034,6 +2034,23 @@ body {
   transform: scale(1) translateY(0);
 }
 
+.cert-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.cert-prev { left: -60px; }
+.cert-next { right: -60px; }
+
 
 /* ════════════════════════════════════════════════════════════════
    §NEW-C  SKILLS STAT STRIP  (25+ Technologies etc.)

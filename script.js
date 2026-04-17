@@ -1297,36 +1297,82 @@ document.querySelectorAll('.btn').forEach(btn => {
 */
 
 /* Map cert keys to their image paths */
+/* Map cert keys to their image paths */
 const certImages = {
-  cpp:     'images/cert-cpp.jpg',
-  dsa:     'images/cert-dsa.jpg',
+  cpp: 'images/cert-cpp.jpg',
+  dsa: 'images/cert-dsa.jpg',
   infosys: 'images/cert-infosys.jpg',
+  internship: [
+    'images/cert-exp.jpeg',
+    'images/cert-training.jpeg'
+  ]
 };
+
+let currentIndex = 0;
+let currentImages = [];
 
 /* Opens the certificate lightbox and loads the correct image */
 function openCert(key) {
   const modal = document.getElementById('certModal');
   const img   = document.getElementById('certModalImg');
+
   if (!modal || !img || !certImages[key]) return;
 
-  img.src = certImages[key];
+  const data = certImages[key];
+
+  // If multiple images (slider case)
+  if (Array.isArray(data)) {
+    currentImages = data;
+    currentIndex = 0;
+    img.src = currentImages[currentIndex];
+
+    document.getElementById('certPrev').style.display = 'block';
+    document.getElementById('certNext').style.display = 'block';
+  } 
+  // Single image
+  else {
+    currentImages = [data];
+    currentIndex = 0;
+    img.src = data;
+
+    document.getElementById('certPrev').style.display = 'none';
+    document.getElementById('certNext').style.display = 'none';
+  }
+
   modal.classList.add('open');
-  document.body.style.overflow = 'hidden'; /* prevent page scroll while modal open */
+  document.body.style.overflow = 'hidden';
+}
+
+/* Next image */
+function nextCert() {
+  if (currentImages.length < 2) return;
+
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  document.getElementById('certModalImg').src = currentImages[currentIndex];
+}
+
+/* Previous image */
+function prevCert() {
+  if (currentImages.length < 2) return;
+
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  document.getElementById('certModalImg').src = currentImages[currentIndex];
 }
 
 /* Closes the certificate lightbox */
 function closeCert() {
   const modal = document.getElementById('certModal');
   const img   = document.getElementById('certModalImg');
+
   if (!modal) return;
 
   modal.classList.remove('open');
   document.body.style.overflow = '';
-  /* Clear src after transition so browser frees memory */
+
   setTimeout(() => { if (img) img.src = ''; }, 350);
 }
 
-/* Close when clicking the dark backdrop (outside the modal box) */
+/* Close when clicking outside */
 const certModalBg = document.getElementById('certModal');
 if (certModalBg) {
   certModalBg.addEventListener('click', e => {
@@ -1334,7 +1380,7 @@ if (certModalBg) {
   });
 }
 
-/* ESC key closes cert modal (piggybacks on existing keydown listener) */
+/* ESC key closes modal */
 document.addEventListener('keydown', e => {
   const certModal = document.getElementById('certModal');
   if (certModal && certModal.classList.contains('open') && e.key === 'Escape') {

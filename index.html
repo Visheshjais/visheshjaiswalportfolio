@@ -598,7 +598,7 @@
       </div>
       <div class="sk-stat-div"></div>
       <div class="sk-stat">
-        <span class="sk-num" data-target="3">0</span>
+        <span class="sk-num" data-target="4">0</span>
         <p>Certifications</p>
       </div>
     </div>
@@ -1114,7 +1114,7 @@
     <h2 class="section-heading">My <span class="grad">Certifications</span></h2>
 
     <!-- ══════════════════════════════════════════════════════
-         CERT GRID — 3 certification cards.
+         CERT GRID — 4 certification cards.
          Each card has:
            • Icon on the left
            • Title + platform text in the middle
@@ -1156,8 +1156,19 @@
         </div>
         <span class="cert-yr">2024</span>
       </div>
-
-      <!-- Cert 3: Infosys Springboard — Software Engineering & Agile (2022) -->
+      <!-- Cert 3: Internship (2024) -->
+      <div class="cert-card reveal-child">
+        <div class="cert-ico"><i class="fas fa-cubes"></i></div>
+        <div class="cert-info">
+          <h3>Web Development Internship</h3>
+          <p>Infowiz Software Solution, Chandigarh</p>
+          <button class="cert-view-btn" onclick="openCert('internship')">
+            <i class="fas fa-certificate"></i> View Certificate
+          </button>
+        </div>
+        <span class="cert-yr">2024</span>
+      </div>
+      <!-- Cert 4: Infosys Springboard — Software Engineering & Agile (2022) -->
       <div class="cert-card reveal-child">
         <div class="cert-ico"><i class="fas fa-cubes"></i></div>
         <div class="cert-info">
@@ -1185,15 +1196,23 @@
 ══════════════════════════════════════════════════════ -->
 <div id="certModal" class="cert-modal-bg" role="dialog" aria-modal="true" aria-label="Certificate image">
   <div class="cert-modal-box">
-    <!-- Close button top-right -->
+
+    <!-- Close button -->
     <button class="cert-modal-x" onclick="closeCert()" aria-label="Close certificate">
       <i class="fas fa-times"></i>
     </button>
-    <!-- Certificate image — src set dynamically by JS -->
+
+    <!-- LEFT BUTTON -->
+    <button id="certPrev" onclick="prevCert()" class="cert-nav cert-prev">⬅</button>
+
+    <!-- IMAGE -->
     <img id="certModalImg" src="" alt="Certificate" class="cert-modal-img">
+
+    <!-- RIGHT BUTTON -->
+    <button id="certNext" onclick="nextCert()" class="cert-nav cert-next">➡</button>
+
   </div>
 </div>
-
 
 <!-- ══════════════════════════════════════════════════════
      ██████  GITHUB REPOS SECTION
