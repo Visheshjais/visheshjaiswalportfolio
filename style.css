@@ -1851,7 +1851,7 @@ body {
 /* Spinning accent ring */
 .cin-ring {
   position: absolute;
-  width: 200px; height: 200px;
+  width: 500px; height: 500px;
   border-radius: 50%;
   border: 2px solid transparent;
   background: conic-gradient(from 0deg, transparent 70%, #7c5cfc, transparent) border-box;
@@ -1860,9 +1860,12 @@ body {
   -webkit-mask-composite: destination-out;
   mask-composite: exclude;
   animation: cin-spin 2s linear infinite;
-  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  top: 50%; left: 50%;
 }
-@keyframes cin-spin { to { rotate: 360deg; } }
+@keyframes cin-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
 
 /* Photo wrapper: starts scaled up, stays centered */
 .cin-photo-wrap {
@@ -2184,10 +2187,10 @@ body {
   .cin-photo-wrap { width: 120px; height: 120px; }
   .cin-name { font-size: 1.2rem; letter-spacing: 0.15em; }
   .cin-tagline { font-size: 0.72rem; }
+  .cin-ring { width: 320px; height: 320px; }
 }
 @media (max-width: 480px) {
   .skills-stat-strip { flex-wrap: wrap; gap: 12px 0; }
   .sk-stat-div { display: none; }
   .sk-stat { padding: 8px 20px; width: 50%; }
 }
-
