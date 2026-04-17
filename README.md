@@ -1,4 +1,4 @@
-# Vishesh Jaiswal — Portfolio v8 🚀
+# Vishesh Jaiswal — Portfolio  🚀
 
 > **Live:** [visheshjaiswal.vercel.app](https://visheshjaiswal.vercel.app) &nbsp;|&nbsp; **GitHub:** [@Visheshjais](https://github.com/Visheshjais)
 
