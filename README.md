@@ -1,8 +1,29 @@
-# Vishesh Jaiswal — Portfolio  🚀
+<div align="center">
 
-> **Live:** [visheshjaiswal.vercel.app](https://visheshjaiswal.vercel.app) &nbsp;|&nbsp; **GitHub:** [@Visheshjais](https://github.com/Visheshjais)
+# 🌌 Vishesh Jaiswal — Portfolio 
 
-A fully hand-coded personal portfolio built with **vanilla HTML, CSS & JavaScript** — zero frameworks, zero build tools, deploys in seconds on Vercel.
+### A Hand-Crafted Developer Portfolio. Zero Frameworks. Pure Craft.
+
+![Portfolio](https://img.shields.io/badge/Portfolio-v8-7c5cfc?style=for-the-badge&logo=firefox&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-Semantic-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-Glassmorphism-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![EmailJS](https://img.shields.io/badge/EmailJS-Contact%20Form-orange?style=for-the-badge&logo=gmail&logoColor=white)
+![Vercel](https://img.shields.io/badge/Hosted-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
+**No React. No Vue. No build tools. Just raw HTML, CSS & JS — deployed in seconds.**
+
+[🌐 Live Site](https://visheshjaiswal.vercel.app) · [🐛 Report Bug](https://github.com/Visheshjais/portfolio_vishesh_v8/issues) · [💡 Request Feature](https://github.com/Visheshjais/portfolio_vishesh_v8/issues)
+
+</div>
+
+---
+
+## 🪐 What is this?
+
+This is my **personal developer portfolio** — fully hand-coded from scratch with vanilla HTML, CSS, and JavaScript. No frameworks, no build pipeline, no bloat. Every animation, every interaction, every pixel is written by hand.
+
+It features a **live animated space canvas**, a **custom elastic cursor**, **scroll-reveal animations**, a working **contact form via EmailJS**, live **GitHub API** integration, and a full **dark/light theme** — all shipping as a single HTML page under 200 KB.
 
 ---
 
@@ -10,25 +31,40 @@ A fully hand-coded personal portfolio built with **vanilla HTML, CSS & JavaScrip
 
 | Feature | Details |
 |---|---|
-| **Space background** | Animated canvas with stars, nebulae, shooting stars, constellations & particle network |
-| **Custom cursor** | Dot + elastic ring cursor (CSS-only, no canvas overhead) |
-| **Preloader** | Animated progress bar counter (0 → 100) with logo |
-| **Scroll reveal** | IntersectionObserver-based staggered section animations |
-| **Dark / Light mode** | Theme toggle persisted in localStorage |
-| **Typing effect** | 4-role typewriter with erase loop |
-| **Skill bars** | Animated progress bars with per-skill brand colours |
-| **Tech galaxy** | Hexagonal icon grid for full tech stack |
-| **Project modals** | Full-screen lightbox with image slider, video tab, and tech tags |
-| **Expandable details** | "View Details" accordion inside each project card |
-| **GitHub Repos** | Live-fetched from GitHub API (latest 6 repos) |
-| **Contact form** | EmailJS — sends directly to Gmail, no backend needed |
-| **Copy email** | Click-to-copy with toast notification |
-| **WhatsApp float** | Pre-filled WhatsApp message button |
-| **3D card tilt** | Mouse-tracked perspective tilt on project cards |
-| **Magnetic buttons** | CTA buttons shift toward cursor on hover |
-| **Responsive** | Mobile-first, works on all screen sizes |
-| **Custom 404** | Branded error page with countdown redirect |
-| **Vercel deploy** | `vercel.json` with caching headers and 404 routing |
+| 🌠 **Space Background** | Animated canvas — stars, nebulae, shooting stars, constellations & particle network |
+| 🖱️ **Custom Cursor** | Dot + elastic ring cursor (CSS-only, zero canvas overhead) |
+| ⏳ **Preloader** | Animated progress bar counter 0 → 100 with logo reveal |
+| 🎞️ **Scroll Reveal** | IntersectionObserver-based staggered section animations |
+| 🌙 **Dark / Light Mode** | Theme toggle, persisted in localStorage |
+| ⌨️ **Typing Effect** | 4-role typewriter with erase loop |
+| 📊 **Skill Bars** | Animated progress bars with per-skill brand colours |
+| 🔷 **Tech Galaxy** | Hexagonal icon grid for the full tech stack |
+| 🖼️ **Project Modals** | Full-screen lightbox with image slider, video tab & tech tags |
+| 📂 **Expandable Details** | "View Details" accordion inside each project card |
+| 🐙 **GitHub Repos** | Live-fetched from GitHub API — latest 6 repos |
+| 📬 **Contact Form** | EmailJS — sends directly to Gmail, no backend needed |
+| 📋 **Copy Email** | Click-to-copy with toast notification |
+| 💬 **WhatsApp Float** | Pre-filled WhatsApp message button |
+| 🃏 **3D Card Tilt** | Mouse-tracked perspective tilt on project cards |
+| 🧲 **Magnetic Buttons** | CTA buttons shift toward cursor on hover |
+| 📱 **Fully Responsive** | Mobile-first, works on all screen sizes |
+| 🚫 **Custom 404** | Branded error page with countdown redirect |
+| ⚡ **Vercel Deploy** | `vercel.json` with caching headers & 404 routing |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Markup | HTML5 — Semantic, Open Graph tags, accessibility attributes |
+| Styling | CSS3 — Custom properties, Grid, Flexbox, animations, glassmorphism |
+| Logic | JavaScript ES6+ — Canvas API, IntersectionObserver, Fetch API, localStorage |
+| Mail | EmailJS — contact form without a backend |
+| Analytics | Google Analytics GA4 |
+| Icons | Font Awesome 6 |
+| Fonts | Space Grotesk · Inter · Fira Code |
+| Hosting | Vercel |
 
 ---
 
@@ -36,14 +72,14 @@ A fully hand-coded personal portfolio built with **vanilla HTML, CSS & JavaScrip
 
 ```
 portfolio_vishesh_v8/
-├── index.html          # Main single-page portfolio
-├── 404.html            # Custom 404 error page
-├── style.css           # All styles (design tokens → components)
-├── script.js           # All JS (22 documented sections)
-├── vercel.json         # Vercel deployment config
-├── README.md           # This file
+├── index.html              # Main single-page portfolio
+├── 404.html                # Custom 404 error page
+├── style.css               # All styles (design tokens → components)
+├── script.js               # All JS (22 documented sections)
+├── vercel.json             # Vercel deployment config
+├── README.md               # This file
 │
-├── images/             # PNG originals (fallback)
+├── images/                 # PNG originals (fallback)
 │   ├── profile.png
 │   ├── logo.png
 │   ├── groovix *.png
@@ -52,24 +88,12 @@ portfolio_vishesh_v8/
 │   ├── Unmasking *.png
 │   └── Lingua AI*.png
 │
-├── images/webp/        # WebP optimised images (primary)
+├── images/webp/            # WebP optimised (primary — faster loading)
 │   └── *.webp
 │
 └── resume/
     └── VISHESH JAISWAL.pdf
 ```
-
----
-
-## 🛠 Tech Stack
-
-- **HTML5** — Semantic markup, Open Graph tags, accessibility attributes
-- **CSS3** — Custom properties, CSS Grid, Flexbox, animations, glassmorphism
-- **JavaScript (ES6+)** — Canvas API, IntersectionObserver, Fetch API, localStorage
-- **EmailJS** — Contact form without a backend
-- **Google Analytics** — Traffic tracking (GA4)
-- **Font Awesome 6** — Icons
-- **Google Fonts** — Space Grotesk + Inter + Fira Code
 
 ---
 
@@ -95,30 +119,33 @@ The included `vercel.json` handles:
 
 ## ⚙️ Configuration
 
-### EmailJS (contact form)
+### 📬 EmailJS (Contact Form)
 1. Sign up at [emailjs.com](https://www.emailjs.com/)
-2. Create a service (Gmail) + template
-3. In `script.js` find `§3 EmailJS Init` and replace:
-   - `'mj63OiHBpYlItbYc0'` → your **Public Key**
-   - `'service_portfolioVJ'` → your **Service ID**
-   - `'template_portfolioVJ'` → your **Template ID**
+2. Create a service (Gmail) + email template
+3. In `script.js`, find `§3 EmailJS Init` and replace:
 
-### Google Analytics
-In `index.html`, both instances of `G-N9FM4XEDPK` → your **GA4 Measurement ID**.
+```js
+'mj63OiHBpYlItbYc0'     →  your Public Key
+'service_portfolioVJ'   →  your Service ID
+'template_portfolioVJ'  →  your Template ID
+```
 
-### WhatsApp button
-In `index.html`, update the `wa.me/` URL with your number:
+### 📈 Google Analytics
+In `index.html`, replace both instances of `G-N9FM4XEDPK` with your GA4 Measurement ID.
+
+### 💬 WhatsApp Button
+In `index.html`, update the `wa.me/` URL:
 ```
 91XXXXXXXXXX  →  91 (India) + your 10-digit number
 ```
 
 ---
 
-## 🖼 Adding / Updating Images
+## 🖼️ Adding / Updating Images
 
-- Place **PNG** files in `/images/` with the exact filenames used in `script.js` `projectData`
+- Place **PNG** files in `/images/` — filenames must match exactly what's used in `script.js` `projectData`
 - Place **WebP** versions in `/images/webp/` for faster loading
-- Portfolio uses `<picture>` with WebP source + PNG fallback throughout
+- The portfolio uses `<picture>` with WebP source + PNG fallback throughout
 
 ---
 
@@ -135,10 +162,39 @@ In `index.html`, update the `wa.me/` URL with your number:
 
 ---
 
+## 🏗️ How It's Built
+
+```
+index.html loads → preloader runs (0→100) → space canvas boots
+         ↓
+script.js initialises 22 modules in sequence:
+  §1  Canvas (stars, nebulae, shooting stars, constellations)
+  §2  Custom cursor (dot + elastic ring)
+  §3  EmailJS init
+  §4  Theme toggle (dark/light + localStorage)
+  §5  Typewriter effect (4 roles, erase loop)
+  §6  Scroll reveal (IntersectionObserver stagger)
+  §7  Skill bars (animated on scroll)
+  §8  3D card tilt (mouse-tracked perspective)
+  §9  Magnetic buttons (cursor-shift CTA)
+  §10 Project modals (lightbox + image slider + video tab)
+  §11 GitHub API fetch (latest 6 repos)
+  §12 Contact form (EmailJS send)
+  ...and 10 more
+```
+
+---
+
 ## 📄 License
 
 MIT — Free to use as inspiration. Please don't copy-paste without any changes; make it your own! 🙏
 
 ---
 
-<p align="center">Designed & Built by <strong>Vishesh Jaiswal</strong> · © 2026</p>
+<div align="center">
+
+Designed & Built by **Vishesh Jaiswal** · © 2026
+
+⭐ Star this repo if you liked it!
+
+</div>
