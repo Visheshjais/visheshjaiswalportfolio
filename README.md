@@ -13,7 +13,7 @@
 
 ### A Hand-Crafted Developer Portfolio. Zero Frameworks. Pure Craft.
 
-![Portfolio](https://img.shields.io/badge/Portfolio-v8-7c5cfc?style=for-the-badge&logo=firefox&logoColor=white)
+![Portfolio](https://img.shields.io/badge/Portfolio-7c5cfc?style=for-the-badge&logo=firefox&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-Semantic-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-Glassmorphism-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
