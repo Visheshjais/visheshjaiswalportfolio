@@ -1,6 +1,15 @@
 <div align="center">
-<img src="images/profile.png" width="100" height="100" style="border-radius:50%; object-fit:cover;" alt="Vishesh Jaiswal"/>
- Vishesh Jaiswal — Portfolio 
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>
+      <img src="images/profile.png" width="110" height="110" alt="Vishesh Jaiswal"/>
+    </td>
+    <td align="left" style="padding-left: 18px;">
+      <h1>✦ &nbsp;Vishesh Jaiswal</h1>
+      <h3>Portfolio &nbsp; &nbsp;🚀</h3>
+    </td>
+  </tr>
+</table>
 
 ### A Hand-Crafted Developer Portfolio. Zero Frameworks. Pure Craft.
 
