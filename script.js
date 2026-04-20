@@ -1299,7 +1299,7 @@ document.querySelectorAll('.btn').forEach(btn => {
 /* Map cert keys to their image paths */
 /* Map cert keys to their image paths */
 const certImages = {
-  cpp: 'images/cert-cpp.jpg',
+  wdr: 'images/cert-wdr.png',
   dsa: 'images/cert-dsa.jpg',
   infosys: 'images/cert-infosys.jpg',
   internship: [
